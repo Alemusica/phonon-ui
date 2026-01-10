@@ -12,6 +12,9 @@ export * from './core';
 // Components
 export * from './components';
 
+// Contexts
+export { MediaProvider, useMedia } from './contexts/MediaContext';
+
 // Themes
 export * from './themes';
 

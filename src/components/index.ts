@@ -63,3 +63,15 @@ export {
   NewspaperImage,
   NewspaperBody,
 } from './NewspaperPage';
+
+// Video Controls
+export {
+  VideoControls,
+  type VideoControlsProps,
+} from './VideoControls';
+
+// Video Vignette
+export {
+  VideoVignette,
+  type VideoVignetteProps,
+} from './VideoVignette';

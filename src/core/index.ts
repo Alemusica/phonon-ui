@@ -55,6 +55,14 @@ export {
   type UseGroqReturn,
 } from './use-groq';
 
+// Video Background Hook
+export {
+  useVideoBackground,
+  type AudioSource,
+  type VideoBackgroundState,
+  type UseVideoBackgroundReturn,
+} from './use-video-background';
+
 // Visual QA System
 export {
   runVisualQA,
