@@ -46,5 +46,14 @@ export {
   type UseProactiveChatReturn,
 } from './use-proactive-chat';
 
+// Groq Hook
+export {
+  useGroq,
+  type GroqConfig,
+  type GroqMessage,
+  type GroqModel,
+  type UseGroqReturn,
+} from './use-groq';
+
 // Utilities
 export { cn } from './utils';
