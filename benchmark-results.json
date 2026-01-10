@@ -1,0 +1,178 @@
+{
+  "timestamp": "2026-01-10T21:15:10.126Z",
+  "testSuite": "Cooperative Refinement Benchmark",
+  "results": {
+    "forward": [
+      {
+        "pipeline": "forward",
+        "testCase": "Short Content (< 100 words)",
+        "duration": 42.33908400000007,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 1,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 1,
+        "success": true
+      },
+      {
+        "pipeline": "forward",
+        "testCase": "Medium Content (200-400 words)",
+        "duration": 17.59420799999998,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 2,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 2,
+        "success": true
+      },
+      {
+        "pipeline": "forward",
+        "testCase": "Long Content (> 500 words)",
+        "duration": 18.227250000000026,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 3,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 3,
+        "success": true
+      },
+      {
+        "pipeline": "forward",
+        "testCase": "Content with Overflow Issues",
+        "duration": 14.260499999999979,
+        "iterations": 1,
+        "qualityScore": 86,
+        "issues": {
+          "critical": 4,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 3,
+        "success": false
+      },
+      {
+        "pipeline": "forward",
+        "testCase": "Content with Structure Problems",
+        "duration": 13.161915999999906,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 2,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 2,
+        "success": true
+      }
+    ],
+    "iterative": [
+      {
+        "pipeline": "iterative",
+        "testCase": "Short Content (< 100 words)",
+        "duration": 13.046875,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 1,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 0,
+        "success": true,
+        "metadata": {
+          "finalIteration": 1,
+          "converged": true
+        }
+      },
+      {
+        "pipeline": "iterative",
+        "testCase": "Medium Content (200-400 words)",
+        "duration": 12.856540999999993,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 2,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 0,
+        "success": true,
+        "metadata": {
+          "finalIteration": 1,
+          "converged": true
+        }
+      },
+      {
+        "pipeline": "iterative",
+        "testCase": "Long Content (> 500 words)",
+        "duration": 14.888791999999967,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 3,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 0,
+        "success": true,
+        "metadata": {
+          "finalIteration": 1,
+          "converged": true
+        }
+      },
+      {
+        "pipeline": "iterative",
+        "testCase": "Content with Overflow Issues",
+        "duration": 38.229124999999954,
+        "iterations": 3,
+        "qualityScore": 80,
+        "issues": {
+          "critical": 4,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 0,
+        "success": false,
+        "metadata": {
+          "finalIteration": 3,
+          "converged": false
+        }
+      },
+      {
+        "pipeline": "iterative",
+        "testCase": "Content with Structure Problems",
+        "duration": 12.960459000000014,
+        "iterations": 1,
+        "qualityScore": 100,
+        "issues": {
+          "critical": 2,
+          "warning": 0,
+          "info": 0
+        },
+        "fixesApplied": 0,
+        "success": true,
+        "metadata": {
+          "finalIteration": 1,
+          "converged": true
+        }
+      }
+    ]
+  },
+  "summary": {
+    "totalTests": 5,
+    "forwardAvgTime": 21.116591599999992,
+    "iterativeAvgTime": 18.396358399999986,
+    "forwardAvgQuality": 97.2,
+    "iterativeAvgQuality": 96,
+    "avgIterations": 1.4
+  }
+}

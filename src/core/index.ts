@@ -169,5 +169,20 @@ export {
   type SectionMarking,
 } from './musical-orchestration';
 
+// Cooperative Refinement (LLM-Layouter Negotiation)
+export {
+  RefinementLoop,
+  analyzeLayout,
+  calculateQualityScore,
+  summarizeMetrics,
+  validateNewspaperContent,
+  DEFAULT_NEWSPAPER_CONSTRAINTS,
+  type LayoutFeedback,
+  type LayoutIssue,
+  type LayoutConstraints,
+  type RefinementMetrics,
+  type RefinementResult,
+} from './cooperative-refinement';
+
 // Utilities
 export { cn } from './utils';
