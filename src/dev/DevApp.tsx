@@ -24,53 +24,205 @@ import {
   QuickReplyButton,
   QuickReplyGroup,
   Button,
+  NewspaperPage,
+  NewspaperColumn,
+  Citation,
+  Headline,
+  NewspaperImage,
+  NewspaperBody,
 } from '../index';
 import { parseStreamingContent, ParsedCommand } from '../core/streaming-parser';
 import type { Message } from '../core/use-chat';
 
-// Demo responses with embedded commands
+// Demo responses with embedded commands - Swiss editorial style
 const DEMO_RESPONSES: Record<string, string> = {
-  hello: `Ciao! Benvenuto in **Phonon UI** — il framework per rendering LLM-driven con Swiss Typography.
+  hello: `## Benvenuto in Phonon UI
 
-Prova questi comandi:
-- "mostra card" — esempio di componente dinamico
-- "grafico vendite" — rendering di un chart
-- "immagine" — inserisci un'immagine Swiss-style
-- "pulsanti" — bottoni interattivi`,
+Il framework per **rendering LLM-driven** con Swiss Typography.
 
-  'mostra card': `Ecco una **Product Card** renderizzata dinamicamente:
+> La tipografia è l'arte di disporre i caratteri tipografici per rendere il linguaggio visibile. — Emil Ruder
+
+### Comandi disponibili
+
+Esplora le funzionalità del framework:
+
+- **"mostra card"** — componente dinamico con streaming parser
+- **"grafico"** — visualizzazione dati interattiva
+- **"immagine"** — rendering Swiss-style con caption
+- **"typography"** — showcase tipografico completo
+
+La sintassi \`[RENDER:...]\` permette embedding di componenti React direttamente nel testo.`,
+
+  'mostra card': `## Product Card
+
+Ecco una card renderizzata tramite il **parsing command**:
 
 [RENDER:{"type":"card","props":{"title":"Phonon Framework","description":"LLM-driven UI con Swiss Typography","price":"€49/mo","features":["Streaming Parser","WebLLM Support","PHI Spacing","Type Safety"]}}]
 
-Questo componente è stato generato dal comando \`[RENDER:...]\` parsato in streaming!`,
+### Come funziona
 
-  'grafico vendite': `Analizziamo i dati di **vendita Q4 2025**:
+Il parser riconosce i comandi \`[RENDER:{...}]\` durante lo streaming e li sostituisce con componenti React. Questo permette:
+
+1. **Rendering incrementale** — i componenti appaiono man mano
+2. **Type safety** — validazione dei props a runtime
+3. **Estensibilità** — registra i tuoi componenti custom`,
+
+  'grafico vendite': `## Revenue Analytics
+
+Analizziamo i dati del **Q4 2025**:
 
 [RENDER:{"type":"chart","props":{"data":[{"month":"Oct","value":45},{"month":"Nov","value":62},{"month":"Dec","value":78}],"title":"Revenue Growth","type":"bar"}}]
 
-Il parser estrae i comandi anche durante lo streaming, permettendo rendering incrementale.`,
+> I dati mostrano una crescita del **73%** nell'ultimo trimestre, con un picco significativo in dicembre.
 
-  immagine: `Le immagini in Phonon UI seguono i **principi Swiss**:
+### Metodologia
+
+- Dati aggregati da *multiple sources*
+- Normalizzazione su base mensile
+- Proiezioni basate su trend storico`,
+
+  grafico: `## Revenue Analytics
+
+Analizziamo i dati del **Q4 2025**:
+
+[RENDER:{"type":"chart","props":{"data":[{"month":"Oct","value":45},{"month":"Nov","value":62},{"month":"Dec","value":78}],"title":"Revenue Growth","type":"bar"}}]
+
+> I dati mostrano una crescita del **73%** nell'ultimo trimestre, con un picco significativo in dicembre.
+
+### Metodologia
+
+- Dati aggregati da *multiple sources*
+- Normalizzazione su base mensile
+- Proiezioni basate su trend storico`,
+
+  immagine: `## Swiss Design Principles
+
+Le immagini seguono la filosofia del **design razionale**:
 
 [RENDER:{"type":"image","props":{"src":"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800","alt":"Abstract Swiss Design","caption":"Fig. 1 — Geometric abstraction in Swiss modernism","aspectRatio":"16/9"}}]
 
-Nota il caption numerato e l'aspect ratio PHI-based.`,
+### Caratteristiche
 
-  pulsanti: `Ecco alcuni **CTA buttons** interattivi:
+Il componente \`SwissImage\` implementa:
+
+- **Lazy loading** — caricamento ottimizzato
+- **Caption tipografico** — numerazione automatica
+- **Aspect ratio** — proporzioni PHI-based (1/1, 4/3, 16/9, 21/9)
+- **Bordi minimal** — estetica Swiss rigorosa`,
+
+  pulsanti: `## Interactive Elements
+
+I bottoni seguono la **Swiss Design philosophy**: chiarezza, precisione, funzionalità.
 
 [RENDER:{"type":"buttons","props":{"buttons":[{"label":"Conferma Prenotazione","variant":"cta","action":"book"},{"label":"Scopri di più","variant":"secondary","action":"learn"},{"label":"Contattaci","variant":"ghost","action":"contact"}]}}]
 
-I bottoni seguono la **Swiss Design** philosophy: chiarezza, precisione, funzionalità.`,
+### Varianti disponibili
 
-  default: `Interessante domanda!
+1. **CTA** — azione primaria, massima visibilità
+2. **Secondary** — azioni alternative
+3. **Ghost** — azioni terziarie, minimal footprint
 
-Phonon UI combina:
-- **Streaming Parser** per comandi embedded
-- **Golden Ratio** (φ = 1.618) per spacing
-- **Swiss Typography** (Space Grotesk, Inter, IBM Plex Mono)
-- **WebLLM** per esecuzione locale
+> "Less, but better" — Dieter Rams`,
 
-Vuoi vedere altri esempi? Prova "mostra card" o "grafico vendite"!`,
+  typography: `## Swiss Typography
+
+La tipografia è il fondamento del design razionale.
+
+### Gerarchia visiva
+
+Il sistema tipografico usa **tre font** complementari:
+
+- **Space Grotesk** — display e titoli
+- **Inter** — body text ottimizzato per screen
+- **IBM Plex Mono** — codice e dati tecnici
+
+### Spaziatura PHI
+
+Tutto il sistema usa la *Golden Ratio* (φ = 1.618):
+
+\`\`\`css
+--space-xs: 0.382rem  /* 1/φ² */
+--space-sm: 0.618rem  /* 1/φ */
+--space-md: 1rem
+--space-lg: 1.618rem  /* φ */
+--space-xl: 2.618rem  /* φ² */
+\`\`\`
+
+> La matematica è la musica della ragione. — James Joseph Sylvester`,
+
+  editoriale: `[NEWSPAPER_STYLE]
+# PHONON TIMES
+
+## The Future of AI-Driven Typography
+
+In an era where artificial intelligence reshapes every aspect of digital interaction, typography stands at a fascinating crossroads.
+
+> The best interface is no interface. The best typography is invisible typography.
+
+Machine learning models now understand not just what to say, but how to present it. The marriage of LLM intelligence with Swiss design principles creates something unprecedented.
+
+### The Technical Foundation
+
+Neural networks trained on centuries of typographic excellence can now make real-time decisions about:
+
+- **Hierarchy** — which elements deserve prominence
+- **Rhythm** — the flow of text across columns
+- **Balance** — distribution of visual weight
+
+> Design is thinking made visual.
+
+### What Comes Next
+
+As we stand at this intersection of tradition and innovation, one thing becomes clear: the future of communication is both intelligent and beautiful.`,
+
+  newspaper: `[NEWSPAPER_STYLE]
+# PHONON TIMES
+
+## The Future of AI-Driven Typography
+
+In an era where artificial intelligence reshapes every aspect of digital interaction, typography stands at a fascinating crossroads.
+
+> The best interface is no interface. The best typography is invisible typography.
+
+Machine learning models now understand not just what to say, but how to present it. The marriage of LLM intelligence with Swiss design principles creates something unprecedented.
+
+### The Technical Foundation
+
+Neural networks trained on centuries of typographic excellence can now make real-time decisions about:
+
+- **Hierarchy** — which elements deserve prominence
+- **Rhythm** — the flow of text across columns
+- **Balance** — distribution of visual weight
+
+> Design is thinking made visual.
+
+### What Comes Next
+
+As we stand at this intersection of tradition and innovation, one thing becomes clear: the future of communication is both intelligent and beautiful.`,
+
+  default: `## Phonon UI Framework
+
+Un sistema di **rendering LLM-driven** con Swiss Typography.
+
+### Stack tecnologico
+
+- **React 18** — concurrent features
+- **TypeScript 5.8** — type safety
+- **TailwindCSS** — utility-first styling
+- **WebLLM** — esecuzione locale via WebGPU
+
+> Il design non è come appare o come sembra. Il design è come funziona. — Steve Jobs
+
+### Comandi disponibili
+
+Digita uno di questi per esplorare:
+
+- \`mostra card\` — componenti dinamici
+- \`grafico\` — data visualization
+- \`immagine\` — Swiss image component
+- \`typography\` — sistema tipografico
+- \`pulsanti\` — interactive buttons
+- \`editoriale\` — newspaper-style pullquotes`,
 };
 
 // Simulated LLM streaming response with command support
@@ -84,11 +236,15 @@ async function* simulateLLMResponse(userMessage: string): AsyncGenerator<string>
   } else if (message.includes('card')) {
     response = DEMO_RESPONSES['mostra card'];
   } else if (message.includes('grafico') || message.includes('vendite') || message.includes('chart')) {
-    response = DEMO_RESPONSES['grafico vendite'];
+    response = DEMO_RESPONSES.grafico;
   } else if (message.includes('immagine') || message.includes('image') || message.includes('foto')) {
     response = DEMO_RESPONSES.immagine;
   } else if (message.includes('pulsant') || message.includes('button') || message.includes('cta')) {
     response = DEMO_RESPONSES.pulsanti;
+  } else if (message.includes('typograph') || message.includes('font') || message.includes('tipo')) {
+    response = DEMO_RESPONSES.typography;
+  } else if (message.includes('editorial') || message.includes('newspaper') || message.includes('giornale')) {
+    response = DEMO_RESPONSES.editoriale;
   }
 
   // Stream character by character
@@ -213,17 +369,42 @@ function DynamicComponent({ command }: DynamicComponentProps) {
 // Enhanced ChatMessage component with command rendering
 interface EnhancedChatMessageProps {
   message: Message;
-  isLast: boolean;
-  isStreaming: boolean;
 }
 
-function EnhancedChatMessage({ message, isLast, isStreaming }: EnhancedChatMessageProps) {
+function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
   const isUser = message.role === 'user';
-  const shouldType = !isUser && isLast && isStreaming;
+  // Note: typewriter disabled for markdown - partial text breaks ReactMarkdown parsing
 
   // Parse content for commands
   const parsed = parseStreamingContent(message.content);
   const cleanContent = parsed.cleanText;
+
+  // Detect newspaper style marker
+  const isNewspaperStyle = cleanContent.startsWith('[NEWSPAPER_STYLE]');
+  const finalContent = isNewspaperStyle
+    ? cleanContent.replace('[NEWSPAPER_STYLE]', '').trim()
+    : cleanContent;
+
+  // Detect editorial content for special styling
+  const isEditorial = finalContent.includes('## The Art of Swiss Typography') || isNewspaperStyle;
+  const variant = isEditorial ? 'editorial' : 'default';
+
+  if (isNewspaperStyle && !isUser) {
+    // Render full newspaper layout for LLM responses
+    return (
+      <div className="w-full -mx-6">
+        <NewspaperPage title="PHONON TIMES" theme="light">
+          <div className="newspaper-article-flow">
+            <MarkdownRenderer
+              content={finalContent}
+              typewriter={false}
+              variant="editorial"
+            />
+          </div>
+        </NewspaperPage>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
@@ -234,13 +415,11 @@ function EnhancedChatMessage({ message, isLast, isStreaming }: EnhancedChatMessa
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="prose prose-sm max-w-none">
-              <MarkdownRenderer
-                content={cleanContent}
-                typewriter={shouldType}
-                typingSpeed="fast"
-              />
-            </div>
+            <MarkdownRenderer
+              content={finalContent}
+              typewriter={false}
+              variant={variant}
+            />
             {/* Render dynamic components from commands */}
             {parsed.commands.map((cmd, i) => (
               <DynamicComponent key={i} command={cmd} />
@@ -294,12 +473,10 @@ function ChatDemo() {
         <div className="h-full flex flex-col">
           {/* Custom messages list with enhanced rendering */}
           <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-background to-muted/20">
-            {messages.map((message, index) => (
+            {messages.map((message) => (
               <EnhancedChatMessage
                 key={message.id}
                 message={message}
-                isLast={index === messages.length - 1}
-                isStreaming={isStreaming}
               />
             ))}
           </div>
@@ -365,61 +542,216 @@ function TypographyDemo() {
 
 function TypewriterDemo() {
   const [key, setKey] = useState(0);
+  const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
+  const [showCursor, setShowCursor] = useState(true);
+  const [selectedText, setSelectedText] = useState(0);
+
+  const DEMO_TEXTS = [
+    {
+      label: 'Quote — Emil Ruder',
+      text: 'Typography is a service art, not a fine art. The written word is the visual language of civilization.',
+      style: 'citation',
+    },
+    {
+      label: 'Headline',
+      text: 'The Art of Swiss Typography: How Rational Design Shaped Modern Communication',
+      style: 'headline',
+    },
+    {
+      label: 'Body Text',
+      text: 'In the realm of visual communication, few movements have left as indelible a mark as Swiss Design. Born in the 1950s, this approach revolutionized how we perceive and interact with information.',
+      style: 'body',
+    },
+    {
+      label: 'Design Principle',
+      text: 'Design is thinking made visual. Every element serves a purpose, every space has meaning.',
+      style: 'citation',
+    },
+  ];
+
+  const currentDemo = DEMO_TEXTS[selectedText];
 
   return (
-    <div className="space-y-4">
-      <div className="p-4 bg-muted rounded-lg">
-        <Typewriter
-          key={key}
-          text="Questo testo appare con effetto typewriter umanizzato..."
-          speed="normal"
-          showCursor={true}
-        />
+    <div className="space-y-8">
+      {/* Controls Panel */}
+      <div className="flex flex-wrap gap-6 p-6 bg-card border border-border rounded-lg">
+        <div className="space-y-2">
+          <SwissLabel>Speed</SwissLabel>
+          <div className="flex gap-2">
+            {(['instant', 'fast', 'normal', 'slow'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => { setSpeed(s); setKey(k => k + 1); }}
+                className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                  speed === s ? 'bg-sage text-background' : 'bg-muted hover:bg-muted/80'
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <SwissLabel>Cursor</SwissLabel>
+          <button
+            onClick={() => { setShowCursor(!showCursor); setKey(k => k + 1); }}
+            className={`px-3 py-1.5 rounded text-sm transition-colors ${
+              showCursor ? 'bg-sage text-background' : 'bg-muted'
+            }`}
+          >
+            {showCursor ? 'ON' : 'OFF'}
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          <SwissLabel>Text Style</SwissLabel>
+          <div className="flex gap-2">
+            {DEMO_TEXTS.map((demo, i) => (
+              <button
+                key={i}
+                onClick={() => { setSelectedText(i); setKey(k => k + 1); }}
+                className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                  selectedText === i ? 'bg-sage text-background' : 'bg-muted hover:bg-muted/80'
+                }`}
+              >
+                {demo.label.split(' — ')[0]}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-      <button
-        onClick={() => setKey(k => k + 1)}
-        className="px-4 py-2 bg-sage text-background rounded hover:bg-sage/90 transition-colors"
-      >
-        Replay
-      </button>
+
+      {/* Swiss Typography Display */}
+      <div className="newspaper-page min-h-[300px] flex items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center px-8">
+          {currentDemo.style === 'citation' && (
+            <div className="newspaper-citation">
+              <Typewriter
+                key={key}
+                text={currentDemo.text}
+                speed={speed}
+                showCursor={showCursor}
+              />
+            </div>
+          )}
+          {currentDemo.style === 'headline' && (
+            <h1 className="newspaper-hl1 text-center">
+              <Typewriter
+                key={key}
+                text={currentDemo.text}
+                speed={speed}
+                showCursor={showCursor}
+              />
+            </h1>
+          )}
+          {currentDemo.style === 'body' && (
+            <div className="newspaper-body text-left">
+              <p>
+                <Typewriter
+                  key={key}
+                  text={currentDemo.text}
+                  speed={speed}
+                  showCursor={showCursor}
+                />
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Replay */}
+      <div className="flex justify-center">
+        <button
+          onClick={() => setKey(k => k + 1)}
+          className="px-6 py-3 bg-sage text-background rounded hover:bg-sage/90 transition-colors font-medium"
+        >
+          ↻ Replay Animation
+        </button>
+      </div>
     </div>
   );
 }
 
 function MarkdownDemo() {
-  const markdown = `
-# Markdown Renderer
+  const markdown = `# Swiss Editorial Typography
 
-Questo componente supporta **GFM** (GitHub Flavored Markdown).
+The International Typographic Style, also known as the **Swiss Style**, emerged in the 1950s from Switzerland and Germany. It emphasized *cleanliness*, *readability*, and *objectivity*.
 
-## Features
+## Core Principles
 
-- Liste puntate
-- **Bold** e *italic*
-- [Links](https://example.com)
-- \`inline code\`
+The movement was guided by several key principles that continue to influence modern design:
 
-### Code Blocks
+### 1. Grid-Based Design
 
-\`\`\`typescript
-function greet(name: string): string {
-  return \`Hello, \${name}!\`;
+Swiss designers pioneered the use of mathematical grids to organize content. This creates **visual harmony** and ensures consistent alignment across all elements.
+
+### 2. Sans-Serif Typography
+
+Clean, geometric typefaces like Helvetica and Univers became the standard:
+
+- **Helvetica** — neutral, versatile, timeless
+- **Univers** — systematic weight variations
+- **Akzidenz-Grotesk** — the original grotesque
+
+### 3. Asymmetric Layouts
+
+> "Typography is a service art, not a fine art." — Emil Ruder, Swiss typographer and teacher at the Basel School of Design
+
+Rather than centering everything, Swiss design embraces asymmetry to create dynamic compositions while maintaining balance.
+
+## Implementation in CSS
+
+The PHI-based spacing system uses the golden ratio:
+
+\`\`\`css
+:root {
+  --space-xs: 0.382rem;   /* 1/φ² */
+  --space-sm: 0.618rem;   /* 1/φ */
+  --space-md: 1rem;       /* base */
+  --space-lg: 1.618rem;   /* φ */
+  --space-xl: 2.618rem;   /* φ² */
 }
 \`\`\`
 
-> Blockquotes con stile Swiss
-
 ---
 
-| Header 1 | Header 2 |
-|----------|----------|
-| Cell 1   | Cell 2   |
-| Cell 3   | Cell 4   |
+## Typography Specifications
+
+| Element | Font | Weight | Tracking |
+|---------|------|--------|----------|
+| Display | Space Grotesk | 600 | -0.03em |
+| Heading | Space Grotesk | 500 | -0.02em |
+| Body | Inter | 400 | -0.01em |
+| Code | IBM Plex Mono | 450 | 0 |
+
+The result is a **harmonious system** that scales elegantly from mobile to desktop.
 `;
 
+  const [showDropCap, setShowDropCap] = useState(false);
+
   return (
-    <div className="p-6 bg-card rounded-lg border border-border">
-      <MarkdownRenderer content={markdown} />
+    <div className="space-y-6">
+      <div className="flex gap-4 items-center">
+        <SwissLabel>Markdown Variant</SwissLabel>
+        <button
+          onClick={() => setShowDropCap(!showDropCap)}
+          className={`px-3 py-1.5 rounded text-sm transition-colors ${
+            showDropCap
+              ? 'bg-sage text-background'
+              : 'bg-muted hover:bg-muted/80'
+          }`}
+        >
+          {showDropCap ? 'Drop Cap: ON' : 'Drop Cap: OFF'}
+        </button>
+      </div>
+      <div className="p-8 bg-card rounded-lg border border-border">
+        <MarkdownRenderer
+          content={markdown}
+          variant="editorial"
+          dropCap={showDropCap}
+        />
+      </div>
     </div>
   );
 }
@@ -510,6 +842,69 @@ function ImageDemo() {
         aspectRatio="21/9"
         rounded="lg"
       />
+    </div>
+  );
+}
+
+function NewspaperDemo() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-4">
+        <button
+          onClick={() => setTheme('light')}
+          className={`px-4 py-2 rounded ${theme === 'light' ? 'bg-sage text-background' : 'bg-muted'}`}
+        >
+          Light
+        </button>
+        <button
+          onClick={() => setTheme('dark')}
+          className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-sage text-background' : 'bg-muted'}`}
+        >
+          Dark
+        </button>
+      </div>
+
+      <NewspaperPage title="PHONON TIMES" theme={theme}>
+        <NewspaperColumn span={2}>
+          <Headline level={1}>The Art of Swiss Typography</Headline>
+          <Headline level={2}>How Rational Design Shaped Modern Communication</Headline>
+          <NewspaperBody dropCap>
+            <p>In the realm of visual communication, few movements have left as indelible a mark as Swiss Design. Born in the 1950s from the design schools of Basel and Zurich, this approach revolutionized how we perceive and interact with information.</p>
+            <p>The principles established by pioneers like Josef Müller-Brockmann and Emil Ruder continue to influence modern digital interfaces. Their emphasis on grid systems, clear hierarchy, and purposeful restraint remains remarkably relevant in an age of information overload.</p>
+          </NewspaperBody>
+        </NewspaperColumn>
+
+        <NewspaperColumn span={2} className="newspaper-column-citation">
+          <Citation author="Emil Ruder">
+            Typography is a service art, not a fine art.
+          </Citation>
+          <NewspaperBody>
+            <p>Swiss typography is built on mathematical relationships. The golden ratio appears throughout—in spacing, proportions, and visual rhythm.</p>
+          </NewspaperBody>
+        </NewspaperColumn>
+
+        <NewspaperColumn>
+          <Headline level={4}>The Grid System</Headline>
+          <NewspaperBody>
+            <p>Mathematical grids organize content with visual harmony and consistent alignment across all elements.</p>
+            <p>This systematic approach ensures that every design decision serves the ultimate goal: clear communication.</p>
+          </NewspaperBody>
+        </NewspaperColumn>
+
+        <NewspaperColumn>
+          <NewspaperImage
+            src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400"
+            alt="Abstract geometric design"
+            caption="Fig. 1 — Geometric abstraction in Swiss modernism"
+          />
+          <Headline level={5}>Legacy</Headline>
+          <NewspaperBody>
+            <p>Today's digital interfaces owe much to these masters. The clean lines and functional elegance trace directly back to Switzerland.</p>
+          </NewspaperBody>
+        </NewspaperColumn>
+      </NewspaperPage>
     </div>
   );
 }
@@ -609,9 +1004,10 @@ function ProactiveChatDemo() {
 }
 
 export function DevApp() {
-  const [activeTab, setActiveTab] = useState<'chat' | 'typography' | 'typewriter' | 'markdown' | 'buttons' | 'images' | 'proactive'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'typography' | 'typewriter' | 'markdown' | 'buttons' | 'images' | 'proactive' | 'newspaper'>('newspaper');
 
   const tabs = [
+    { id: 'newspaper', label: 'Newspaper', description: 'Fullscreen Editorial' },
     { id: 'chat', label: 'Interactive Chat', description: 'LLM-driven with commands' },
     { id: 'proactive', label: 'Proactive Chat', description: 'Role-based engagement' },
     { id: 'buttons', label: 'Buttons', description: 'CTA & Quick Replies' },
@@ -692,6 +1088,7 @@ export function DevApp() {
           </div>
 
           {/* Content Area */}
+          {activeTab === 'newspaper' && <NewspaperDemo />}
           {activeTab === 'chat' && <ChatDemo />}
           {activeTab === 'proactive' && <ProactiveChatDemo />}
           {activeTab === 'buttons' && <ButtonsDemo />}

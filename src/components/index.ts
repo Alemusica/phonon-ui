@@ -18,6 +18,7 @@ export {
 export {
   MarkdownRenderer,
   type MarkdownRendererProps,
+  type ProseVariant,
 } from './MarkdownRenderer';
 
 // Typewriter
@@ -52,3 +53,13 @@ export {
   BackgroundPlayer,
   type BackgroundPlayerProps,
 } from './BackgroundPlayer';
+
+// Newspaper Editorial
+export {
+  NewspaperPage,
+  NewspaperColumn,
+  Citation,
+  Headline,
+  NewspaperImage,
+  NewspaperBody,
+} from './NewspaperPage';

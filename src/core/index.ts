@@ -55,5 +55,22 @@ export {
   type UseGroqReturn,
 } from './use-groq';
 
+// Visual QA System
+export {
+  runVisualQA,
+  checkOverflow,
+  checkWordCohesion,
+  autoFixIssue,
+  NEWSPAPER_CONSTRAINTS,
+  type QAIssue,
+  type LayoutConstraint,
+} from './visual-qa';
+
+// Orchestrator System
+export {
+  Orchestrator,
+  orchestrator,
+} from './orchestrator';
+
 // Utilities
 export { cn } from './utils';

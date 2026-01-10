@@ -11,5 +11,37 @@
   "memory": {
     "persistBrainstorming": true,
     "saveLocation": "docs/brainstorming/"
+  },
+  "agentPool": {
+    "offices": {
+      "research": {
+        "agent": "research-office",
+        "model": "haiku",
+        "responsibilities": ["KB search", "ingestion", "documentation research"]
+      },
+      "engineering": {
+        "agent": "senior-engineer",
+        "model": "opus",
+        "responsibilities": ["architecture", "planning", "code review", "decisions"]
+      }
+    },
+    "workers": {
+      "atomic": {
+        "agent": "atomic-task-executor",
+        "model": "sonnet",
+        "responsibilities": ["component implementation", "hook creation", "test writing"]
+      },
+      "fast": {
+        "agent": "worker-executor",
+        "model": "haiku",
+        "responsibilities": ["typo fixes", "simple edits", "exports", "imports"]
+      }
+    },
+    "routing": {
+      "research_keywords": ["research", "find", "search", "KB", "knowledge", "ingest"],
+      "planning_keywords": ["plan", "design", "architect", "decide", "review"],
+      "atomic_keywords": ["implement", "create", "build", "write", "add feature"],
+      "worker_keywords": ["fix", "typo", "export", "import", "small", "quick"]
+    }
   }
 }

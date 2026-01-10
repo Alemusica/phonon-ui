@@ -73,7 +73,7 @@ export function SwissImage({
 
   const imageClasses = cn(
     'w-full h-full object-cover',
-    'transition-opacity duration-[var(--phonon-duration-medium)]',
+    'transition-opacity duration-500', // 500ms matches --phonon-duration-medium
     isLoaded ? 'opacity-100' : 'opacity-0'
   );
 
