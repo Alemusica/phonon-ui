@@ -1,0 +1,387 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   PHONON UI - DESIGN SYSTEM
+   Swiss Typography + PHI Spacing
+   LLM-Ready Components
+   =============================== */
+
+@layer base {
+  :root {
+    /* ===== SWISS DARK PALETTE (Default) ===== */
+    
+    /* Background - Warm dark gray (not pure black) */
+    --phonon-bg: 220 12% 10%;
+    --phonon-fg: 40 15% 88%;
+    
+    /* Primary - Subtle cream */
+    --phonon-primary: 40 18% 82%;
+    --phonon-primary-fg: 220 12% 12%;
+    
+    /* Secondary - Muted warm */
+    --phonon-secondary: 35 10% 55%;
+    --phonon-secondary-fg: 40 15% 88%;
+    
+    /* Muted - For subtle elements */
+    --phonon-muted: 220 10% 16%;
+    --phonon-muted-fg: 40 8% 55%;
+    
+    /* Accent - Terracotta */
+    --phonon-accent: 20 25% 48%;
+    --phonon-accent-fg: 40 15% 88%;
+    
+    /* Card surfaces */
+    --phonon-card: 220 10% 12%;
+    --phonon-card-fg: 40 15% 88%;
+    
+    /* Borders */
+    --phonon-border: 220 8% 22%;
+    --phonon-input: 220 10% 18%;
+    --phonon-ring: 150 22% 42%;
+    
+    /* Radius */
+    --phonon-radius: 0.5rem;
+    
+    /* Nature accents */
+    --phonon-sage: 150 22% 42%;
+    --phonon-lake: 200 25% 45%;
+    --phonon-warm: 35 35% 65%;
+    --phonon-charcoal: 220 12% 14%;
+    
+    /* ===== PHI-BASED SPACING ===== */
+    --phonon-space-xs: 0.382rem;
+    --phonon-space-sm: 0.618rem;
+    --phonon-space-md: 1rem;
+    --phonon-space-lg: 1.618rem;
+    --phonon-space-xl: 2.618rem;
+    --phonon-space-2xl: 4.236rem;
+    --phonon-space-3xl: 6.854rem;
+    
+    /* ===== TYPOGRAPHY ===== */
+    --phonon-font-display: 'Space Grotesk', system-ui, sans-serif;
+    --phonon-font-body: 'Inter', system-ui, sans-serif;
+    --phonon-font-mono: 'IBM Plex Mono', 'SF Mono', monospace;
+    
+    /* Swiss scale (responsive) */
+    --phonon-text-hero: clamp(4rem, 15vw, 12rem);
+    --phonon-text-display: clamp(3rem, 8vw, 6rem);
+    --phonon-text-heading: clamp(1.75rem, 4vw, 3rem);
+    --phonon-text-subheading: clamp(1.125rem, 2vw, 1.5rem);
+    --phonon-text-body: 1rem;
+    --phonon-text-caption: 0.75rem;
+    --phonon-text-index: clamp(6rem, 20vw, 16rem);
+    
+    /* Animation */
+    --phonon-duration-slow: 800ms;
+    --phonon-duration-medium: 500ms;
+    --phonon-duration-fast: 200ms;
+    --phonon-ease-calm: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --phonon-ease-swiss: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Light mode */
+  .light, [data-theme="light"] {
+    --phonon-bg: 42 18% 95%;
+    --phonon-fg: 220 12% 15%;
+    
+    --phonon-primary: 220 12% 18%;
+    --phonon-primary-fg: 40 15% 92%;
+    
+    --phonon-secondary: 35 12% 78%;
+    --phonon-secondary-fg: 220 12% 15%;
+    
+    --phonon-muted: 40 12% 90%;
+    --phonon-muted-fg: 220 8% 40%;
+    
+    --phonon-accent: 20 28% 42%;
+    --phonon-accent-fg: 40 15% 92%;
+    
+    --phonon-card: 42 16% 97%;
+    --phonon-card-fg: 220 12% 15%;
+    
+    --phonon-border: 40 10% 85%;
+    --phonon-input: 40 10% 88%;
+    
+    --phonon-sage: 150 25% 38%;
+    --phonon-lake: 200 28% 42%;
+    --phonon-warm: 35 40% 55%;
+  }
+
+  /* Minimal theme */
+  [data-theme="minimal"] {
+    --phonon-bg: 0 0% 100%;
+    --phonon-fg: 0 0% 0%;
+    --phonon-primary: 0 0% 0%;
+    --phonon-primary-fg: 0 0% 100%;
+    --phonon-muted: 0 0% 96%;
+    --phonon-muted-fg: 0 0% 40%;
+    --phonon-border: 0 0% 90%;
+    --phonon-sage: 0 0% 30%;
+    --phonon-lake: 0 0% 40%;
+    --phonon-warm: 0 0% 50%;
+  }
+
+  [data-theme="minimal"].dark {
+    --phonon-bg: 0 0% 0%;
+    --phonon-fg: 0 0% 100%;
+    --phonon-primary: 0 0% 100%;
+    --phonon-primary-fg: 0 0% 0%;
+    --phonon-muted: 0 0% 10%;
+    --phonon-muted-fg: 0 0% 60%;
+    --phonon-border: 0 0% 20%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--phonon-font-body);
+    font-size: var(--phonon-text-body);
+    line-height: 1.618;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ===== TYPOGRAPHY UTILITIES ===== */
+@layer utilities {
+  .phonon-font-display {
+    font-family: var(--phonon-font-display);
+  }
+  
+  .phonon-font-mono {
+    font-family: var(--phonon-font-mono);
+  }
+  
+  /* Swiss typography scale */
+  .phonon-text-hero {
+    font-size: var(--phonon-text-hero);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-family: var(--phonon-font-display);
+  }
+  
+  .phonon-text-display {
+    font-size: var(--phonon-text-display);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    font-family: var(--phonon-font-display);
+  }
+  
+  .phonon-text-heading {
+    font-size: var(--phonon-text-heading);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-family: var(--phonon-font-display);
+  }
+  
+  .phonon-text-subheading {
+    font-size: var(--phonon-text-subheading);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  
+  .phonon-text-index {
+    font-size: var(--phonon-text-index);
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    font-family: var(--phonon-font-display);
+  }
+  
+  /* Swiss monospace labels */
+  .phonon-label {
+    font-family: var(--phonon-font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  
+  /* Golden ratio line height */
+  .phonon-leading-phi {
+    line-height: 1.618;
+  }
+  
+  /* Swiss grid background */
+  .phonon-grid {
+    background-image: 
+      linear-gradient(to right, hsl(var(--phonon-fg) / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--phonon-fg) / 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  
+  /* Container utilities */
+  .phonon-container {
+    @apply mx-auto px-6 md:px-8 lg:px-12;
+    max-width: 1400px;
+  }
+  
+  .phonon-section {
+    padding-top: var(--phonon-space-3xl);
+    padding-bottom: var(--phonon-space-3xl);
+  }
+  
+  @media (max-width: 768px) {
+    .phonon-section {
+      padding-top: var(--phonon-space-2xl);
+      padding-bottom: var(--phonon-space-2xl);
+    }
+  }
+}
+
+/* ===== CHAT/MARKDOWN STYLES ===== */
+@layer components {
+  /* Chat message container */
+  .phonon-chat-message {
+    @apply relative;
+  }
+  
+  .phonon-chat-message--user {
+    @apply ml-auto max-w-[80%];
+  }
+  
+  .phonon-chat-message--assistant {
+    @apply mr-auto max-w-[90%];
+  }
+  
+  /* Typewriter cursor */
+  .phonon-cursor {
+    @apply inline-block w-[2px] h-[1.1em] bg-current ml-0.5 align-middle;
+    animation: typing-cursor 1s step-end infinite;
+  }
+  
+  /* Markdown prose styles (Medium-like) */
+  .phonon-prose {
+    @apply text-foreground;
+    font-family: var(--phonon-font-body);
+    line-height: 1.618;
+  }
+  
+  .phonon-prose h1,
+  .phonon-prose h2,
+  .phonon-prose h3,
+  .phonon-prose h4 {
+    font-family: var(--phonon-font-display);
+    @apply font-medium tracking-tight text-foreground;
+    margin-top: var(--phonon-space-xl);
+    margin-bottom: var(--phonon-space-md);
+  }
+  
+  .phonon-prose h1 { @apply text-3xl; }
+  .phonon-prose h2 { @apply text-2xl; }
+  .phonon-prose h3 { @apply text-xl; }
+  .phonon-prose h4 { @apply text-lg; }
+  
+  .phonon-prose p {
+    margin-bottom: var(--phonon-space-lg);
+  }
+  
+  .phonon-prose a {
+    @apply text-sage underline underline-offset-2 hover:text-lake transition-colors;
+  }
+  
+  .phonon-prose code {
+    font-family: var(--phonon-font-mono);
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm;
+  }
+  
+  .phonon-prose pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto my-4;
+  }
+  
+  .phonon-prose pre code {
+    @apply bg-transparent p-0;
+  }
+  
+  .phonon-prose blockquote {
+    @apply border-l-2 border-sage pl-4 italic text-muted-foreground my-4;
+  }
+  
+  .phonon-prose ul,
+  .phonon-prose ol {
+    @apply pl-6 my-4;
+  }
+  
+  .phonon-prose li {
+    margin-bottom: var(--phonon-space-sm);
+  }
+  
+  .phonon-prose hr {
+    @apply border-border my-8;
+  }
+  
+  .phonon-prose img {
+    @apply rounded-lg my-4 max-w-full;
+  }
+  
+  .phonon-prose table {
+    @apply w-full border-collapse my-4;
+  }
+  
+  .phonon-prose th,
+  .phonon-prose td {
+    @apply border border-border px-3 py-2 text-left;
+  }
+  
+  .phonon-prose th {
+    @apply bg-muted font-medium;
+  }
+}
+
+/* ===== ACCENT UTILITIES ===== */
+@layer utilities {
+  .phonon-text-sage { color: hsl(var(--phonon-sage)); }
+  .phonon-text-lake { color: hsl(var(--phonon-lake)); }
+  .phonon-text-warm { color: hsl(var(--phonon-warm)); }
+  
+  .phonon-bg-sage { background-color: hsl(var(--phonon-sage)); }
+  .phonon-bg-lake { background-color: hsl(var(--phonon-lake)); }
+  .phonon-bg-warm { background-color: hsl(var(--phonon-warm)); }
+  
+  .phonon-border-sage { border-color: hsl(var(--phonon-sage)); }
+  .phonon-border-lake { border-color: hsl(var(--phonon-lake)); }
+  .phonon-border-warm { border-color: hsl(var(--phonon-warm)); }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes phonon-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes phonon-fade-up {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes phonon-slide-in {
+  from { 
+    opacity: 0; 
+    transform: translateX(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
