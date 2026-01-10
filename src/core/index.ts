@@ -39,5 +39,12 @@ export {
   type UseTypewriterReturn,
 } from './use-typewriter';
 
+// Proactive Chat Hook
+export {
+  useProactiveChat,
+  type ProactiveChatConfig,
+  type UseProactiveChatReturn,
+} from './use-proactive-chat';
+
 // Utilities
 export { cn } from './utils';

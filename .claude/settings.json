@@ -1,0 +1,15 @@
+{
+  "defaultModel": "sonnet",
+  "autoSwitchToOpus": {
+    "enabled": true,
+    "triggers": ["architecture", "design decision", "complex refactor"]
+  },
+  "parallelAgents": {
+    "enabled": true,
+    "maxConcurrent": 5
+  },
+  "memory": {
+    "persistBrainstorming": true,
+    "saveLocation": "docs/brainstorming/"
+  }
+}

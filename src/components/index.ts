@@ -31,3 +31,24 @@ export {
   ChatWidget,
   type ChatWidgetProps,
 } from './ChatWidget';
+
+// Image
+export {
+  SwissImage,
+  type SwissImageProps,
+} from './SwissImage';
+
+// Buttons
+export {
+  CTAButton,
+  ConfirmButton,
+  QuickReplyButton,
+  QuickReplyGroup,
+  Button,
+} from './Buttons';
+
+// BackgroundPlayer
+export {
+  BackgroundPlayer,
+  type BackgroundPlayerProps,
+} from './BackgroundPlayer';

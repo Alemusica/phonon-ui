@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "phonon-kb": {
+      "command": "python3",
+      "args": ["/Users/alessioivoycazzaniga/.config/surrealdb/scripts/mcp_kb_server_v4.py"],
+      "env": {
+        "PYTHONPATH": "/Users/alessioivoycazzaniga/.config/surrealdb/scripts"
+      }
+    }
+  }
+}

@@ -4,10 +4,11 @@
  * Visual testing playground for all components.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChatWidget,
   useChat,
+  useProactiveChat,
   MarkdownRenderer,
   Typewriter,
   SwissHero,
@@ -17,6 +18,12 @@ import {
   SwissBody,
   SwissLabel,
   SwissIndex,
+  SwissImage,
+  CTAButton,
+  ConfirmButton,
+  QuickReplyButton,
+  QuickReplyGroup,
+  Button,
 } from '../index';
 
 // Simulated LLM streaming response
@@ -169,11 +176,198 @@ function greet(name: string): string {
   );
 }
 
+function ButtonsDemo() {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <SwissLabel>CTA Buttons</SwissLabel>
+        <div className="flex gap-4 mt-4">
+          <CTAButton onClick={() => alert('CTA clicked!')}>
+            Book Now
+          </CTAButton>
+          <CTAButton disabled>Disabled</CTAButton>
+        </div>
+      </div>
+
+      <div>
+        <SwissLabel>Confirm Buttons</SwissLabel>
+        <div className="flex gap-4 mt-4">
+          <ConfirmButton onClick={() => alert('Confirmed!')}>
+            Confirm
+          </ConfirmButton>
+          <ConfirmButton onClick={() => alert('Cancelled!')}>
+            Cancel
+          </ConfirmButton>
+        </div>
+      </div>
+
+      <div>
+        <SwissLabel>Quick Reply Buttons</SwissLabel>
+        <QuickReplyGroup className="mt-4">
+          {['DJ', 'Venue Owner', 'PR', 'Artist', 'Therapist'].map(role => (
+            <QuickReplyButton
+              key={role}
+              isActive={selected === role}
+              onClick={() => setSelected(role)}
+            >
+              {role}
+            </QuickReplyButton>
+          ))}
+        </QuickReplyGroup>
+        {selected && (
+          <p className="mt-4 text-muted-foreground">Selected: {selected}</p>
+        )}
+      </div>
+
+      <div>
+        <SwissLabel>Button Variants</SwissLabel>
+        <div className="flex gap-4 mt-4">
+          <Button variant="primary">Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="ghost">Ghost</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImageDemo() {
+  return (
+    <div className="space-y-8">
+      <SwissLabel>Swiss Image Component</SwissLabel>
+
+      <div className="grid grid-cols-2 gap-6">
+        <SwissImage
+          src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600"
+          alt="DJ Performance"
+          caption="Fig. 1 — Live DJ performance at venue"
+          aspectRatio="16/9"
+          rounded="md"
+        />
+        <SwissImage
+          src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600"
+          alt="Music Studio"
+          caption="Fig. 2 — Professional recording studio"
+          aspectRatio="16/9"
+          rounded="md"
+        />
+      </div>
+
+      <SwissImage
+        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200"
+        alt="Concert crowd"
+        caption="Fig. 3 — Crowd at electronic music festival"
+        aspectRatio="21/9"
+        rounded="lg"
+      />
+    </div>
+  );
+}
+
+function ProactiveChatDemo() {
+  const {
+    messages,
+    addMessage,
+    updateLastMessage,
+    isStreaming,
+    setIsStreaming,
+  } = useChat();
+
+  const {
+    visitorRole,
+    setVisitorRole,
+    shouldEngage,
+    engagementSuggestion,
+    resetEngagement,
+  } = useProactiveChat({
+    proactivityLevel: 'engaging',
+    visitorRoles: ['dj', 'venue_owner', 'pr', 'artist', 'therapist', 'yoga_teacher'],
+    initialQuestion: 'Ciao! Cosa ti porta qui oggi?',
+    engagementDelayMs: 2000,
+  });
+
+  // Show engagement suggestion
+  useEffect(() => {
+    if (shouldEngage && engagementSuggestion && messages.length === 0) {
+      addMessage('assistant', engagementSuggestion);
+      resetEngagement();
+    }
+  }, [shouldEngage, engagementSuggestion, messages.length, addMessage, resetEngagement]);
+
+  const handleRoleSelect = async (role: string) => {
+    setVisitorRole(role);
+    addMessage('user', `Sono un ${role}`);
+    setIsStreaming(true);
+    addMessage('assistant', '');
+
+    const responses: Record<string, string> = {
+      dj: 'Fantastico! Stai cercando nuove venue per i tuoi set? Posso aiutarti a trovare locali che cercano DJ del tuo genere.',
+      venue_owner: 'Perfetto! Gestisci un locale? Posso aiutarti a trovare artisti, organizzare eventi o promuovere le tue serate.',
+      pr: 'Ottimo! Come PR, posso aiutarti a promuovere eventi, trovare collaborazioni o espandere il tuo network.',
+      artist: 'Bellissimo! Che tipo di artista sei? Posso aiutarti a trovare opportunità di performance o collaborazioni.',
+      therapist: 'Interessante! Stai cercando spazi per sessioni o vuoi promuovere i tuoi servizi?',
+      yoga_teacher: 'Namaste! Cerchi location per le tue classi o vuoi connetterti con la community wellness?',
+    };
+
+    const response = responses[role] || 'Come posso aiutarti?';
+
+    for (const char of response) {
+      await new Promise(r => setTimeout(r, 20));
+      updateLastMessage(response.slice(0, response.indexOf(char) + 1));
+    }
+    updateLastMessage(response);
+    setIsStreaming(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <SwissLabel>Proactive Chat — Select Your Role</SwissLabel>
+        <QuickReplyGroup className="mt-4">
+          {[
+            { id: 'dj', label: 'DJ' },
+            { id: 'venue_owner', label: 'Venue Owner' },
+            { id: 'pr', label: 'PR' },
+            { id: 'artist', label: 'Artist' },
+            { id: 'therapist', label: 'Therapist' },
+            { id: 'yoga_teacher', label: 'Yoga Teacher' },
+          ].map(role => (
+            <QuickReplyButton
+              key={role.id}
+              isActive={visitorRole === role.id}
+              onClick={() => handleRoleSelect(role.id)}
+            >
+              {role.label}
+            </QuickReplyButton>
+          ))}
+        </QuickReplyGroup>
+      </div>
+
+      <div className="h-[400px] border border-border rounded-lg overflow-hidden">
+        <ChatWidget
+          messages={messages}
+          onSend={(content) => {
+            addMessage('user', content);
+          }}
+          isStreaming={isStreaming}
+          typingSpeed="fast"
+          placeholder="Scrivi un messaggio..."
+        />
+      </div>
+    </div>
+  );
+}
+
 export function DevApp() {
-  const [activeTab, setActiveTab] = useState<'chat' | 'typography' | 'typewriter' | 'markdown'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'typography' | 'typewriter' | 'markdown' | 'buttons' | 'images' | 'proactive'>('proactive');
 
   const tabs = [
+    { id: 'proactive', label: 'Proactive Chat' },
     { id: 'chat', label: 'Chat' },
+    { id: 'buttons', label: 'Buttons' },
+    { id: 'images', label: 'Images' },
     { id: 'typography', label: 'Typography' },
     { id: 'typewriter', label: 'Typewriter' },
     { id: 'markdown', label: 'Markdown' },
@@ -210,7 +404,10 @@ export function DevApp() {
 
       {/* Content */}
       <main className="phonon-container py-8">
+        {activeTab === 'proactive' && <ProactiveChatDemo />}
         {activeTab === 'chat' && <ChatDemo />}
+        {activeTab === 'buttons' && <ButtonsDemo />}
+        {activeTab === 'images' && <ImageDemo />}
         {activeTab === 'typography' && <TypographyDemo />}
         {activeTab === 'typewriter' && <TypewriterDemo />}
         {activeTab === 'markdown' && <MarkdownDemo />}
