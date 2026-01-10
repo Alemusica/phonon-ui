@@ -6,9 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import {
-  ChatWidget,
   useChat,
-  useProactiveChat,
   MarkdownRenderer,
   Typewriter,
   SwissHero,
@@ -513,339 +511,6 @@ function ChatDemo() {
   );
 }
 
-function TypographyDemo() {
-  return (
-    <div className="space-y-8">
-      <div className="relative">
-        <SwissIndex className="absolute -left-4 -top-8 opacity-20">01</SwissIndex>
-        <SwissHero>PHONON</SwissHero>
-      </div>
-
-      <SwissDisplay>Swiss Typography</SwissDisplay>
-
-      <SwissHeading level={1}>Heading Level 1</SwissHeading>
-      <SwissHeading level={2}>Heading Level 2</SwissHeading>
-      <SwissHeading level={3}>Heading Level 3</SwissHeading>
-
-      <SwissSubheading>Subheading with elegant spacing</SwissSubheading>
-
-      <SwissBody>
-        Body text with PHI-based line height (1.618).
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </SwissBody>
-
-      <SwissLabel>01 — Label Component</SwissLabel>
-    </div>
-  );
-}
-
-function TypewriterDemo() {
-  const [key, setKey] = useState(0);
-  const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
-  const [showCursor, setShowCursor] = useState(true);
-  const [selectedText, setSelectedText] = useState(0);
-
-  const DEMO_TEXTS = [
-    {
-      label: 'Quote — Emil Ruder',
-      text: 'Typography is a service art, not a fine art. The written word is the visual language of civilization.',
-      style: 'citation',
-    },
-    {
-      label: 'Headline',
-      text: 'The Art of Swiss Typography: How Rational Design Shaped Modern Communication',
-      style: 'headline',
-    },
-    {
-      label: 'Body Text',
-      text: 'In the realm of visual communication, few movements have left as indelible a mark as Swiss Design. Born in the 1950s, this approach revolutionized how we perceive and interact with information.',
-      style: 'body',
-    },
-    {
-      label: 'Design Principle',
-      text: 'Design is thinking made visual. Every element serves a purpose, every space has meaning.',
-      style: 'citation',
-    },
-  ];
-
-  const currentDemo = DEMO_TEXTS[selectedText];
-
-  return (
-    <div className="space-y-8">
-      {/* Controls Panel */}
-      <div className="flex flex-wrap gap-6 p-6 bg-card border border-border rounded-lg">
-        <div className="space-y-2">
-          <SwissLabel>Speed</SwissLabel>
-          <div className="flex gap-2">
-            {(['instant', 'fast', 'normal', 'slow'] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => { setSpeed(s); setKey(k => k + 1); }}
-                className={`px-3 py-1.5 rounded text-sm transition-colors ${
-                  speed === s ? 'bg-sage text-background' : 'bg-muted hover:bg-muted/80'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <SwissLabel>Cursor</SwissLabel>
-          <button
-            onClick={() => { setShowCursor(!showCursor); setKey(k => k + 1); }}
-            className={`px-3 py-1.5 rounded text-sm transition-colors ${
-              showCursor ? 'bg-sage text-background' : 'bg-muted'
-            }`}
-          >
-            {showCursor ? 'ON' : 'OFF'}
-          </button>
-        </div>
-
-        <div className="space-y-2">
-          <SwissLabel>Text Style</SwissLabel>
-          <div className="flex gap-2">
-            {DEMO_TEXTS.map((demo, i) => (
-              <button
-                key={i}
-                onClick={() => { setSelectedText(i); setKey(k => k + 1); }}
-                className={`px-3 py-1.5 rounded text-sm transition-colors ${
-                  selectedText === i ? 'bg-sage text-background' : 'bg-muted hover:bg-muted/80'
-                }`}
-              >
-                {demo.label.split(' — ')[0]}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Swiss Typography Display */}
-      <div className="newspaper-page min-h-[300px] flex items-center justify-center">
-        <div className="max-w-2xl mx-auto text-center px-8">
-          {currentDemo.style === 'citation' && (
-            <div className="newspaper-citation">
-              <Typewriter
-                key={key}
-                text={currentDemo.text}
-                speed={speed}
-                showCursor={showCursor}
-              />
-            </div>
-          )}
-          {currentDemo.style === 'headline' && (
-            <h1 className="newspaper-hl1 text-center">
-              <Typewriter
-                key={key}
-                text={currentDemo.text}
-                speed={speed}
-                showCursor={showCursor}
-              />
-            </h1>
-          )}
-          {currentDemo.style === 'body' && (
-            <div className="newspaper-body text-left">
-              <p>
-                <Typewriter
-                  key={key}
-                  text={currentDemo.text}
-                  speed={speed}
-                  showCursor={showCursor}
-                />
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Replay */}
-      <div className="flex justify-center">
-        <button
-          onClick={() => setKey(k => k + 1)}
-          className="px-6 py-3 bg-sage text-background rounded hover:bg-sage/90 transition-colors font-medium"
-        >
-          ↻ Replay Animation
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function MarkdownDemo() {
-  const markdown = `# Swiss Editorial Typography
-
-The International Typographic Style, also known as the **Swiss Style**, emerged in the 1950s from Switzerland and Germany. It emphasized *cleanliness*, *readability*, and *objectivity*.
-
-## Core Principles
-
-The movement was guided by several key principles that continue to influence modern design:
-
-### 1. Grid-Based Design
-
-Swiss designers pioneered the use of mathematical grids to organize content. This creates **visual harmony** and ensures consistent alignment across all elements.
-
-### 2. Sans-Serif Typography
-
-Clean, geometric typefaces like Helvetica and Univers became the standard:
-
-- **Helvetica** — neutral, versatile, timeless
-- **Univers** — systematic weight variations
-- **Akzidenz-Grotesk** — the original grotesque
-
-### 3. Asymmetric Layouts
-
-> "Typography is a service art, not a fine art." — Emil Ruder, Swiss typographer and teacher at the Basel School of Design
-
-Rather than centering everything, Swiss design embraces asymmetry to create dynamic compositions while maintaining balance.
-
-## Implementation in CSS
-
-The PHI-based spacing system uses the golden ratio:
-
-\`\`\`css
-:root {
-  --space-xs: 0.382rem;   /* 1/φ² */
-  --space-sm: 0.618rem;   /* 1/φ */
-  --space-md: 1rem;       /* base */
-  --space-lg: 1.618rem;   /* φ */
-  --space-xl: 2.618rem;   /* φ² */
-}
-\`\`\`
-
----
-
-## Typography Specifications
-
-| Element | Font | Weight | Tracking |
-|---------|------|--------|----------|
-| Display | Space Grotesk | 600 | -0.03em |
-| Heading | Space Grotesk | 500 | -0.02em |
-| Body | Inter | 400 | -0.01em |
-| Code | IBM Plex Mono | 450 | 0 |
-
-The result is a **harmonious system** that scales elegantly from mobile to desktop.
-`;
-
-  const [showDropCap, setShowDropCap] = useState(false);
-
-  return (
-    <div className="space-y-6">
-      <div className="flex gap-4 items-center">
-        <SwissLabel>Markdown Variant</SwissLabel>
-        <button
-          onClick={() => setShowDropCap(!showDropCap)}
-          className={`px-3 py-1.5 rounded text-sm transition-colors ${
-            showDropCap
-              ? 'bg-sage text-background'
-              : 'bg-muted hover:bg-muted/80'
-          }`}
-        >
-          {showDropCap ? 'Drop Cap: ON' : 'Drop Cap: OFF'}
-        </button>
-      </div>
-      <div className="p-8 bg-card rounded-lg border border-border">
-        <MarkdownRenderer
-          content={markdown}
-          variant="editorial"
-          dropCap={showDropCap}
-        />
-      </div>
-    </div>
-  );
-}
-
-function ButtonsDemo() {
-  const [selected, setSelected] = useState<string | null>(null);
-
-  return (
-    <div className="space-y-8">
-      <div>
-        <SwissLabel>CTA Buttons</SwissLabel>
-        <div className="flex gap-4 mt-4">
-          <CTAButton onClick={() => alert('CTA clicked!')}>
-            Book Now
-          </CTAButton>
-          <CTAButton disabled>Disabled</CTAButton>
-        </div>
-      </div>
-
-      <div>
-        <SwissLabel>Confirm Buttons</SwissLabel>
-        <div className="flex gap-4 mt-4">
-          <ConfirmButton onClick={() => alert('Confirmed!')}>
-            Confirm
-          </ConfirmButton>
-          <ConfirmButton onClick={() => alert('Cancelled!')}>
-            Cancel
-          </ConfirmButton>
-        </div>
-      </div>
-
-      <div>
-        <SwissLabel>Quick Reply Buttons</SwissLabel>
-        <QuickReplyGroup className="mt-4">
-          {['DJ', 'Venue Owner', 'PR', 'Artist', 'Therapist'].map(role => (
-            <QuickReplyButton
-              key={role}
-              isActive={selected === role}
-              onClick={() => setSelected(role)}
-            >
-              {role}
-            </QuickReplyButton>
-          ))}
-        </QuickReplyGroup>
-        {selected && (
-          <p className="mt-4 text-muted-foreground">Selected: {selected}</p>
-        )}
-      </div>
-
-      <div>
-        <SwissLabel>Button Variants</SwissLabel>
-        <div className="flex gap-4 mt-4">
-          <Button variant="primary">Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="ghost">Ghost</Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ImageDemo() {
-  return (
-    <div className="space-y-8">
-      <SwissLabel>Swiss Image Component</SwissLabel>
-
-      <div className="grid grid-cols-2 gap-6">
-        <SwissImage
-          src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600"
-          alt="DJ Performance"
-          caption="Fig. 1 — Live DJ performance at venue"
-          aspectRatio="16/9"
-          rounded="md"
-        />
-        <SwissImage
-          src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600"
-          alt="Music Studio"
-          caption="Fig. 2 — Professional recording studio"
-          aspectRatio="16/9"
-          rounded="md"
-        />
-      </div>
-
-      <SwissImage
-        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200"
-        alt="Concert crowd"
-        caption="Fig. 3 — Crowd at electronic music festival"
-        aspectRatio="21/9"
-        rounded="lg"
-      />
-    </div>
-  );
-}
-
 function NewspaperDemo() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
@@ -909,213 +574,229 @@ function NewspaperDemo() {
   );
 }
 
-function ProactiveChatDemo() {
-  const {
-    messages,
-    addMessage,
-    updateLastMessage,
-    isStreaming,
-    setIsStreaming,
-  } = useChat();
-
-  const {
-    visitorRole,
-    setVisitorRole,
-    shouldEngage,
-    engagementSuggestion,
-    resetEngagement,
-  } = useProactiveChat({
-    proactivityLevel: 'engaging',
-    visitorRoles: ['dj', 'venue_owner', 'pr', 'artist', 'therapist', 'yoga_teacher'],
-    initialQuestion: 'Ciao! Cosa ti porta qui oggi?',
-    engagementDelayMs: 2000,
-  });
-
-  // Show engagement suggestion
-  useEffect(() => {
-    if (shouldEngage && engagementSuggestion && messages.length === 0) {
-      addMessage('assistant', engagementSuggestion);
-      resetEngagement();
-    }
-  }, [shouldEngage, engagementSuggestion, messages.length, addMessage, resetEngagement]);
-
-  const handleRoleSelect = async (role: string) => {
-    setVisitorRole(role);
-    addMessage('user', `Sono un ${role}`);
-    setIsStreaming(true);
-    addMessage('assistant', '');
-
-    const responses: Record<string, string> = {
-      dj: 'Fantastico! Stai cercando nuove venue per i tuoi set? Posso aiutarti a trovare locali che cercano DJ del tuo genere.',
-      venue_owner: 'Perfetto! Gestisci un locale? Posso aiutarti a trovare artisti, organizzare eventi o promuovere le tue serate.',
-      pr: 'Ottimo! Come PR, posso aiutarti a promuovere eventi, trovare collaborazioni o espandere il tuo network.',
-      artist: 'Bellissimo! Che tipo di artista sei? Posso aiutarti a trovare opportunità di performance o collaborazioni.',
-      therapist: 'Interessante! Stai cercando spazi per sessioni o vuoi promuovere i tuoi servizi?',
-      yoga_teacher: 'Namaste! Cerchi location per le tue classi o vuoi connetterti con la community wellness?',
-    };
-
-    const response = responses[role] || 'Come posso aiutarti?';
-
-    for (const char of response) {
-      await new Promise(r => setTimeout(r, 20));
-      updateLastMessage(response.slice(0, response.indexOf(char) + 1));
-    }
-    updateLastMessage(response);
-    setIsStreaming(false);
-  };
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <SwissLabel>Proactive Chat — Select Your Role</SwissLabel>
-        <QuickReplyGroup className="mt-4">
-          {[
-            { id: 'dj', label: 'DJ' },
-            { id: 'venue_owner', label: 'Venue Owner' },
-            { id: 'pr', label: 'PR' },
-            { id: 'artist', label: 'Artist' },
-            { id: 'therapist', label: 'Therapist' },
-            { id: 'yoga_teacher', label: 'Yoga Teacher' },
-          ].map(role => (
-            <QuickReplyButton
-              key={role.id}
-              isActive={visitorRole === role.id}
-              onClick={() => handleRoleSelect(role.id)}
-            >
-              {role.label}
-            </QuickReplyButton>
-          ))}
-        </QuickReplyGroup>
-      </div>
-
-      <div className="h-[400px] border border-border rounded-lg overflow-hidden">
-        <ChatWidget
-          messages={messages}
-          onSend={(content) => {
-            addMessage('user', content);
-          }}
-          isStreaming={isStreaming}
-          typingSpeed="fast"
-          placeholder="Scrivi un messaggio..."
-        />
-      </div>
-    </div>
-  );
-}
-
 export function DevApp() {
-  const [activeTab, setActiveTab] = useState<'chat' | 'typography' | 'typewriter' | 'markdown' | 'buttons' | 'images' | 'proactive' | 'newspaper'>('newspaper');
-
-  const tabs = [
-    { id: 'newspaper', label: 'Newspaper', description: 'Fullscreen Editorial' },
-    { id: 'chat', label: 'Interactive Chat', description: 'LLM-driven with commands' },
-    { id: 'proactive', label: 'Proactive Chat', description: 'Role-based engagement' },
-    { id: 'buttons', label: 'Buttons', description: 'CTA & Quick Replies' },
-    { id: 'images', label: 'Images', description: 'Swiss-style captions' },
-    { id: 'typography', label: 'Typography', description: 'PHI-based spacing' },
-    { id: 'typewriter', label: 'Typewriter', description: 'Humanized effect' },
-    { id: 'markdown', label: 'Markdown', description: 'GFM rendering' },
-  ] as const;
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-border bg-gradient-to-b from-background to-muted/20">
-        <div className="phonon-container py-12">
-          <div className="flex items-start justify-between">
-            <div className="space-y-4">
-              <SwissLabel>01 — Framework</SwissLabel>
+      {/* Hero Section */}
+      <header className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-sage/5 via-transparent to-sage/10" />
+        <div className="phonon-container py-20 relative">
+          <div className="grid grid-cols-12 gap-8 items-center">
+            <div className="col-span-8 space-y-6">
+              <SwissLabel>LLM-Driven Rendering Framework</SwissLabel>
               <div className="relative">
-                <SwissIndex className="absolute -left-16 -top-4 opacity-10 text-8xl">φ</SwissIndex>
-                <SwissHero className="relative">PHONON UI</SwissHero>
+                <SwissIndex className="absolute -left-20 -top-8 opacity-[0.08] text-[12rem] font-light select-none">φ</SwissIndex>
+                <SwissHero className="relative">PHONON</SwissHero>
               </div>
-              <SwissSubheading className="max-w-2xl">
-                LLM-Driven Rendering Framework with Swiss Typography & Golden Ratio Spacing
+              <SwissSubheading className="max-w-xl">
+                Swiss Typography meets AI. Physics-constrained layouts with DNA-inspired architecture.
               </SwissSubheading>
+              <div className="flex gap-4 pt-4">
+                <CTAButton onClick={() => document.getElementById('editorial')?.scrollIntoView({ behavior: 'smooth' })}>
+                  See Editorial Demo
+                </CTAButton>
+                <Button variant="secondary" onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}>
+                  Try Chat
+                </Button>
+              </div>
             </div>
-            <div className="text-right space-y-2">
-              <SwissLabel>v0.1.0</SwissLabel>
-              <div className="text-sm text-muted-foreground space-y-1">
-                <div>React 18 + TypeScript 5.8</div>
-                <div>Streaming Parser + WebLLM</div>
+            <div className="col-span-4 text-right space-y-4">
+              <div className="inline-block text-left p-6 bg-card border border-border rounded-lg">
+                <SwissLabel>v0.1.0</SwissLabel>
+                <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sage" />
+                    React 18 + TypeScript
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sage" />
+                    DNA Architecture
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sage" />
+                    Streaming Parser
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sage" />
+                    WebLLM Support
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Tabs */}
-      <nav className="border-b border-border bg-background sticky top-0 z-10 backdrop-blur-sm">
-        <div className="phonon-container flex gap-2 py-3 overflow-x-auto">
-          {tabs.map((tab, index) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`group px-5 py-3 rounded-lg transition-all shrink-0 ${
-                activeTab === tab.id
-                  ? 'bg-sage text-background shadow-md'
-                  : 'hover:bg-muted border border-transparent hover:border-border'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono opacity-60">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div className="text-left">
-                  <div className="font-medium">{tab.label}</div>
-                  <div className={`text-xs ${activeTab === tab.id ? 'opacity-80' : 'text-muted-foreground'}`}>
-                    {tab.description}
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
+      {/* Section 01: Editorial */}
+      <section id="editorial" className="border-b border-border">
+        <div className="phonon-container py-16">
+          <div className="space-y-2 mb-8">
+            <SwissLabel>01 — Editorial Layout</SwissLabel>
+            <SwissHeading level={2}>DNA-Constrained Typography</SwissHeading>
+            <p className="text-muted-foreground max-w-2xl">
+              Physics-based layout system. Elements cannot overflow their bounds—like walls in a video game.
+            </p>
+          </div>
         </div>
-      </nav>
+        <NewspaperDemo />
+      </section>
 
-      {/* Content */}
-      <main className="phonon-container py-12">
-        <div className="space-y-6">
-          {/* Section Header */}
-          <div className="space-y-2">
-            <SwissLabel>
-              {tabs.findIndex(t => t.id === activeTab) + 1 < 10 ? '0' : ''}
-              {tabs.findIndex(t => t.id === activeTab) + 1} — {tabs.find(t => t.id === activeTab)?.label}
-            </SwissLabel>
-            <SwissHeading level={2}>
-              {tabs.find(t => t.id === activeTab)?.description}
-            </SwissHeading>
+      {/* Section 02: Chat */}
+      <section id="chat" className="border-b border-border bg-muted/20">
+        <div className="phonon-container py-16">
+          <div className="space-y-2 mb-8">
+            <SwissLabel>02 — Interactive Chat</SwissLabel>
+            <SwissHeading level={2}>LLM-Driven Components</SwissHeading>
+            <p className="text-muted-foreground max-w-2xl">
+              Stream responses with embedded [RENDER:] commands. Try: "mostra card", "grafico", "immagine"
+            </p>
+          </div>
+          <ChatDemo />
+        </div>
+      </section>
+
+      {/* Section 03: Components */}
+      <section id="components" className="border-b border-border">
+        <div className="phonon-container py-16">
+          <div className="space-y-2 mb-12">
+            <SwissLabel>03 — Component Library</SwissLabel>
+            <SwissHeading level={2}>Swiss Design System</SwissHeading>
           </div>
 
-          {/* Content Area */}
-          {activeTab === 'newspaper' && <NewspaperDemo />}
-          {activeTab === 'chat' && <ChatDemo />}
-          {activeTab === 'proactive' && <ProactiveChatDemo />}
-          {activeTab === 'buttons' && <ButtonsDemo />}
-          {activeTab === 'images' && <ImageDemo />}
-          {activeTab === 'typography' && <TypographyDemo />}
-          {activeTab === 'typewriter' && <TypewriterDemo />}
-          {activeTab === 'markdown' && <MarkdownDemo />}
+          <div className="grid grid-cols-2 gap-12">
+            {/* Typography */}
+            <div className="space-y-6">
+              <SwissLabel>Typography</SwissLabel>
+              <div className="p-6 bg-card border border-border rounded-lg space-y-4">
+                <SwissDisplay>Display</SwissDisplay>
+                <SwissHeading level={1}>Heading 1</SwissHeading>
+                <SwissHeading level={2}>Heading 2</SwissHeading>
+                <SwissHeading level={3}>Heading 3</SwissHeading>
+                <SwissBody>Body text with PHI-based line height (φ = 1.618)</SwissBody>
+                <SwissLabel>Label Component</SwissLabel>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="space-y-6">
+              <SwissLabel>Buttons</SwissLabel>
+              <div className="p-6 bg-card border border-border rounded-lg space-y-6">
+                <div className="flex gap-3">
+                  <CTAButton>CTA Button</CTAButton>
+                  <Button variant="secondary">Secondary</Button>
+                  <Button variant="ghost">Ghost</Button>
+                </div>
+                <div className="flex gap-3">
+                  <ConfirmButton onClick={() => {}}>Confirm</ConfirmButton>
+                </div>
+                <QuickReplyGroup>
+                  <QuickReplyButton>Quick</QuickReplyButton>
+                  <QuickReplyButton>Reply</QuickReplyButton>
+                  <QuickReplyButton>Options</QuickReplyButton>
+                </QuickReplyGroup>
+              </div>
+            </div>
+
+            {/* Images */}
+            <div className="space-y-6">
+              <SwissLabel>Images</SwissLabel>
+              <SwissImage
+                src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600"
+                alt="DJ Performance"
+                caption="Fig. 1 — Swiss-style image with caption"
+                aspectRatio="16/9"
+                rounded="md"
+              />
+            </div>
+
+            {/* Typewriter */}
+            <div className="space-y-6">
+              <SwissLabel>Typewriter Effect</SwissLabel>
+              <div className="p-6 bg-card border border-border rounded-lg">
+                <TypewriterShowcase />
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Section 04: Architecture */}
+      <section id="architecture" className="bg-sage/5">
+        <div className="phonon-container py-16">
+          <div className="space-y-2 mb-8">
+            <SwissLabel>04 — Architecture</SwissLabel>
+            <SwissHeading level={2}>DNA System</SwissHeading>
+          </div>
+          <div className="grid grid-cols-4 gap-6">
+            {[
+              { name: 'Terrain', desc: 'Page container (L0)', icon: '▢' },
+              { name: 'Wall', desc: 'Article bounds (L1)', icon: '▤' },
+              { name: 'Stem', desc: 'Columns (L2)', icon: '▥' },
+              { name: 'Petal', desc: 'Content (L3)', icon: '◉' },
+            ].map((el) => (
+              <div key={el.name} className="p-6 bg-card border border-border rounded-lg text-center">
+                <div className="text-4xl mb-3 opacity-60">{el.icon}</div>
+                <SwissHeading level={4}>{el.name}</SwissHeading>
+                <p className="text-sm text-muted-foreground mt-2">{el.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 p-6 bg-card border border-border rounded-lg">
+            <SwissLabel>Production Pipeline</SwissLabel>
+            <div className="flex items-center justify-between mt-4">
+              {['Physics', 'Linguistics', 'Optics', 'QA'].map((dept, i) => (
+                <div key={dept} className="flex items-center">
+                  <div className="px-4 py-2 bg-sage/10 border border-sage/20 rounded">
+                    <span className="font-medium">{dept}</span>
+                  </div>
+                  {i < 3 && <span className="mx-4 text-muted-foreground">→</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-20 bg-muted/30">
-        <div className="phonon-container py-8">
+      <footer className="border-t border-border bg-muted/30">
+        <div className="phonon-container py-12">
           <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <SwissLabel>Phonon UI Framework</SwissLabel>
+            <div className="space-y-2">
+              <SwissHero className="text-2xl">PHONON</SwissHero>
               <p className="text-sm text-muted-foreground">
-                Swiss Typography · Golden Ratio (φ = 1.618) · LLM-Driven Components
+                Swiss Typography · Golden Ratio (φ) · DNA Architecture
               </p>
             </div>
             <div className="text-right text-sm text-muted-foreground">
               <div>Built with React + TypeScript</div>
               <div>Styled with TailwindCSS</div>
+              <a href="https://github.com/Alemusica/phonon-ui" className="text-sage hover:underline mt-2 block">
+                GitHub →
+              </a>
             </div>
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+// Minimal typewriter showcase
+function TypewriterShowcase() {
+  const [key, setKey] = useState(0);
+  return (
+    <div className="space-y-4">
+      <div className="newspaper-citation text-center">
+        <Typewriter
+          key={key}
+          text="Typography is a service art, not a fine art."
+          speed="normal"
+          showCursor
+        />
+      </div>
+      <div className="flex justify-center">
+        <Button variant="ghost" onClick={() => setKey(k => k + 1)}>↻ Replay</Button>
+      </div>
     </div>
   );
 }
