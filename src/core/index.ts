@@ -70,7 +70,62 @@ export {
 export {
   Orchestrator,
   orchestrator,
+  checkProduction,
+  type Department,
+  type Severity,
+  type ProductionIssue,
+  type DepartmentReport,
+  type ProductionResult,
+  type OrchestratorConfig,
 } from './orchestrator';
+
+// DNA System
+export {
+  // Types
+  type CollisionBounds,
+  type PhysicalForces,
+  type OverflowBehavior,
+  type ElementType,
+  type Axis,
+  type ElementDNA,
+  type ColorCoupling,
+  type AssemblyRules,
+  type QualityGate,
+  type QualityCheck,
+  type RenderingInstructions,
+  type Theme,
+  type PresetName,
+  // DNA Library
+  DNA_LIBRARY,
+  DNA_TERRAIN,
+  DNA_WALL,
+  DNA_STEM_VERTICAL,
+  DNA_STEM_HORIZONTAL,
+  DNA_PETAL_HEADLINE,
+  DNA_PETAL_BODY,
+  DNA_PETAL_CITATION,
+  DNA_PETAL_WORD,
+  DNA_POLLEN_BORDER,
+  // Optics
+  OPTICS_LIGHT,
+  OPTICS_DARK,
+  // Linguistics
+  LINGUISTICS,
+  // Manufacturing
+  ASSEMBLY,
+  // Presets
+  RENDERING_PRESETS,
+  // Functions
+  dnaToCSS,
+  generateCSSVariables,
+  generateLLMSystemPrompt,
+  generateLLMPrompt,
+  // Legacy exports
+  COLORS_LIGHT,
+  COLORS_DARK,
+  TYPOGRAPHY,
+  ELEMENTS,
+} from './design-dna';
 
 // Utilities
 export { cn } from './utils';

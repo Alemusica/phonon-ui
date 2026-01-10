@@ -553,9 +553,9 @@
 
   .newspaper-masthead {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 72px;
+    font-size: clamp(32px, 8vw, 72px);
     font-weight: 900;
-    letter-spacing: 0.15em;
+    letter-spacing: clamp(0.08em, 0.1vw, 0.15em);
     text-transform: uppercase;
     line-height: 1;
     margin: 0;
@@ -580,6 +580,8 @@
     padding: 0 1rem;
     border-left: 1px solid #2f2f2f;
     min-height: 200px;
+    min-width: 140px;
+    container-type: inline-size;
     /* ARCHITECTURAL CONSTRAINTS */
     contain: layout style;
     word-wrap: break-word;
