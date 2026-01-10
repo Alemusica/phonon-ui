@@ -4,9 +4,10 @@
  * Visual testing playground for all components.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   useChat,
+  useGroq,
   MarkdownRenderer,
   Typewriter,
   SwissHero,
@@ -28,9 +29,14 @@ import {
   Headline,
   NewspaperImage,
   NewspaperBody,
+  setTypingSpeedMultiplier,
+  getTypingSpeedMultiplier,
 } from '../index';
 import { parseStreamingContent, ParsedCommand } from '../core/streaming-parser';
+import { generateLLMSystemPrompt } from '../core/design-dna';
 import type { Message } from '../core/use-chat';
+import type { TypingSpeed } from '../core/use-typewriter';
+import type { GroqMessage } from '../core/use-groq';
 
 // Demo responses with embedded commands - Swiss editorial style
 const DEMO_RESPONSES: Record<string, string> = {
@@ -429,6 +435,22 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
   );
 }
 
+// System prompt for Groq LLM - newspaper style
+const NEWSPAPER_SYSTEM_PROMPT = `${generateLLMSystemPrompt('newspaper')}
+
+You are a creative newspaper writer. When the user gives you a topic, write an engaging newspaper article about it.
+
+Format your response as a newspaper article with:
+- A compelling headline (## )
+- A lead paragraph
+- Body text with interesting facts
+- Optional pull quote (> )
+
+Write in Italian unless the user writes in another language.
+Keep responses concise but informative (200-400 words).
+
+Start your response with [NEWSPAPER_STYLE] to trigger newspaper rendering.`;
+
 function ChatDemo() {
   const {
     messages,
@@ -438,33 +460,106 @@ function ChatDemo() {
     setIsStreaming,
   } = useChat();
 
+  // Groq integration for real LLM responses
+  const [useGroqMode, setUseGroqMode] = useState(false);
+  const [groqApiKey, setGroqApiKey] = useState('');
+  const { chat: groqChat, isConfigured } = useGroq(
+    groqApiKey ? { apiKey: groqApiKey, model: 'llama-3.3-70b-versatile' } : undefined
+  );
+
+  // Track if welcome message has been sent (prevent double-send in StrictMode)
+  const welcomeSentRef = useRef(false);
+
   const handleSend = async (content: string) => {
     addMessage('user', content);
     setIsStreaming(true);
     addMessage('assistant', '');
 
     let fullResponse = '';
-    for await (const chunk of simulateLLMResponse(content)) {
-      fullResponse += chunk;
-      updateLastMessage(fullResponse);
+
+    if (useGroqMode && isConfigured) {
+      // Use real Groq LLM
+      try {
+        const groqMessages: GroqMessage[] = [
+          { role: 'system', content: NEWSPAPER_SYSTEM_PROMPT },
+          ...messages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+          { role: 'user', content }
+        ];
+
+        for await (const chunk of groqChat(groqMessages)) {
+          fullResponse += chunk;
+          updateLastMessage(fullResponse);
+        }
+      } catch (error) {
+        fullResponse = `Errore Groq: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        updateLastMessage(fullResponse);
+      }
+    } else {
+      // Use simulated demo responses
+      for await (const chunk of simulateLLMResponse(content)) {
+        fullResponse += chunk;
+        updateLastMessage(fullResponse);
+      }
     }
 
     setIsStreaming(false);
   };
 
-  // Auto-send welcome message on mount
+  // Auto-send welcome message on mount (prevent double-send in StrictMode)
   useEffect(() => {
-    if (messages.length === 0) {
+    if (messages.length === 0 && !welcomeSentRef.current) {
+      welcomeSentRef.current = true;
       setTimeout(() => handleSend('ciao'), 500);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-4">
-      <div className="p-4 bg-muted/50 rounded-lg border border-border">
-        <SwissLabel>💡 Interactive Demo</SwissLabel>
-        <p className="text-sm text-muted-foreground mt-2">
-          Try: "mostra card", "grafico vendite", "immagine", "pulsanti"
+      {/* Groq Mode Toggle */}
+      <div className="p-4 bg-muted/50 rounded-lg border border-border space-y-3">
+        <div className="flex items-center justify-between">
+          <SwissLabel>LLM Mode</SwissLabel>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setUseGroqMode(false)}
+              className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
+                !useGroqMode
+                  ? 'bg-sage text-background border-sage'
+                  : 'bg-transparent border-border hover:border-sage/50'
+              }`}
+            >
+              Demo
+            </button>
+            <button
+              onClick={() => setUseGroqMode(true)}
+              className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
+                useGroqMode
+                  ? 'bg-sage text-background border-sage'
+                  : 'bg-transparent border-border hover:border-sage/50'
+              }`}
+            >
+              Groq LLM
+            </button>
+          </div>
+        </div>
+
+        {useGroqMode && (
+          <div className="flex gap-2">
+            <input
+              type="password"
+              placeholder="Groq API Key (gsk_...)"
+              value={groqApiKey}
+              onChange={(e) => setGroqApiKey(e.target.value)}
+              className="flex-1 px-4 py-2 text-sm border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage transition-all duration-200"
+            />
+            {isConfigured && <span className="text-sage text-sm self-center">✓</span>}
+          </div>
+        )}
+
+        <p className="text-sm text-muted-foreground">
+          {useGroqMode
+            ? 'Groq mode: genera contenuti reali. Prova: "newspaper che parla di radio Sharp giapponesi degli anni 70"'
+            : 'Demo mode: risposte preconfezionate. Prova: "mostra card", "grafico vendite"'}
         </p>
       </div>
       <div className="h-[600px] border border-border rounded-lg overflow-hidden shadow-lg">
@@ -516,16 +611,24 @@ function NewspaperDemo() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <button
           onClick={() => setTheme('light')}
-          className={`px-4 py-2 rounded ${theme === 'light' ? 'bg-sage text-background' : 'bg-muted'}`}
+          className={`px-4 py-2 text-sm font-mono uppercase tracking-wider border transition-all duration-200 ${
+            theme === 'light'
+              ? 'bg-sage text-background border-sage'
+              : 'bg-transparent border-border hover:border-sage/50'
+          }`}
         >
           Light
         </button>
         <button
           onClick={() => setTheme('dark')}
-          className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-sage text-background' : 'bg-muted'}`}
+          className={`px-4 py-2 text-sm font-mono uppercase tracking-wider border transition-all duration-200 ${
+            theme === 'dark'
+              ? 'bg-sage text-background border-sage'
+              : 'bg-transparent border-border hover:border-sage/50'
+          }`}
         >
           Dark
         </button>
@@ -781,21 +884,80 @@ export function DevApp() {
   );
 }
 
-// Minimal typewriter showcase
+/**
+ * Typewriter showcase with speed controls
+ * Demonstrates PHI-based rhythmic timing and exposed API for LLM
+ */
 function TypewriterShowcase() {
   const [key, setKey] = useState(0);
+  const [speed, setSpeed] = useState<TypingSpeed>('normal');
+  const [multiplier, setMultiplier] = useState(getTypingSpeedMultiplier());
+
+  // Update global multiplier when slider changes
+  const handleMultiplierChange = (value: number) => {
+    setMultiplier(value);
+    setTypingSpeedMultiplier(value);
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="newspaper-citation text-center">
+    <div className="space-y-6">
+      {/* Speed preset selector */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <SwissLabel>Speed Preset</SwissLabel>
+        <div className="flex gap-2">
+          {(['fast', 'normal', 'slow', 'study'] as TypingSpeed[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => { setSpeed(s); setKey(k => k + 1); }}
+              className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
+                speed === s
+                  ? 'bg-sage text-background border-sage'
+                  : 'bg-transparent border-border hover:border-sage/50'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Multiplier slider (API exposed for LLM) */}
+      <div className="flex items-center gap-4">
+        <SwissLabel>Multiplier</SwissLabel>
+        <input
+          type="range"
+          min="0.2"
+          max="3"
+          step="0.1"
+          value={multiplier}
+          onChange={(e) => handleMultiplierChange(parseFloat(e.target.value))}
+          className="flex-1 h-1 bg-border rounded-full appearance-none cursor-pointer accent-sage transition-all"
+        />
+        <span className="font-mono text-sm w-12 text-right text-muted-foreground">{multiplier.toFixed(1)}x</span>
+      </div>
+
+      {/* Typewriter demo */}
+      <div className="newspaper-citation text-center py-4">
         <Typewriter
           key={key}
-          text="Typography is a service art, not a fine art."
-          speed="normal"
+          text="Typography is a service art, not a fine art. — Emil Ruder"
+          speed={speed}
           showCursor
+          fadeIn
+          fadeInChars={2}
         />
       </div>
-      <div className="flex justify-center">
+
+      {/* Controls */}
+      <div className="flex justify-center gap-4">
         <Button variant="ghost" onClick={() => setKey(k => k + 1)}>↻ Replay</Button>
+        <Button variant="ghost" onClick={() => handleMultiplierChange(1.0)}>Reset Speed</Button>
+      </div>
+
+      {/* API hint for LLM */}
+      <div className="text-xs text-muted-foreground font-mono bg-muted/30 p-3 rounded">
+        <p>LLM API: setTypingSpeedMultiplier(0.5) = 2x faster</p>
+        <p>LLM API: setTypingSpeedMultiplier(2.0) = 2x slower</p>
       </div>
     </div>
   );

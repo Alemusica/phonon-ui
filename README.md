@@ -366,11 +366,24 @@ MIT © Alessio Cazzaniga
 
 ## 🙏 Credits
 
-Inspired by:
+### Concept & Architecture
+**Alessio Cazzaniga** ([@Alemusica](https://github.com/Alemusica)) — Creator & Architect
+- DNA Architecture concept (Physics + Biology + Optics + Linguistics + Manufacturing)
+- PHI-based timing system with musical rhythm (hemiola 3:2)
+- Multidisciplinary approach: typography meets cognitive science meets music theory
+- Agent orchestration methodology for parallel development
+- "Metasite" concept — LLM-driven interactive installations
+
+### Inspired by:
 - [Golden Helix Studio](https://8i8.art) — Conversational portfolio concept
 - [Innesti](https://innesti.art) — Swiss typography design system
 - [shadcn/ui](https://ui.shadcn.com) — Component architecture
 - [Vercel AI SDK](https://sdk.vercel.ai) — Streaming patterns
+
+### Research Sources:
+- Brysbaert 2019 — Reading speed meta-analysis (238-300 wpm)
+- Swiss Typography masters: Emil Ruder, Josef Müller-Brockmann
+- Golden Ratio (φ = 1.618) applied to time, not just space
 
 ---
 

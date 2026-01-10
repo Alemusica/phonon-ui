@@ -948,6 +948,83 @@
   }
 }
 
+/* ===== TYPEWRITER FADE-IN (ChatGPT/Grok Style) ===== */
+/* DNA Pattern: Characters appear like construction - smooth fade */
+@keyframes phonon-char-fadein {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Smooth character fade-in for typewriter effect */
+.phonon-typewriter-fadein {
+  animation: phonon-char-fadein 150ms var(--phonon-ease-swiss) forwards;
+}
+
+/* Rhythmic timing based on PHI ratio
+ * Base: 150ms (fast comfortable read)
+ * PHI timing: 150 * 1.618 = 243ms (relaxed)
+ * Inverse: 150 / 1.618 = 93ms (rapid)
+ */
+.phonon-typewriter-fadein-slow {
+  animation-duration: 243ms;
+}
+
+.phonon-typewriter-fadein-fast {
+  animation-duration: 93ms;
+}
+
+/* Reading rhythm: 3:2 ratio (hemiola - musical timing)
+ * Like endecasillabi poetry - natural breathing rhythm
+ * 3 beats : 2 beats creates comfortable flow
+ */
+.phonon-typewriter {
+  /* Prevent layout shift during typing */
+  display: inline;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ===== RENDERING STABILITY (DNA Construction Pattern) ===== */
+/* Once placed, elements don't shift - like pouring concrete */
+
+/* Prevent content-based reflow in streaming text */
+.phonon-streaming-container {
+  /* Reserve space to prevent jumping */
+  min-height: 1.5em;
+  /* Prevent width changes from shifting siblings */
+  contain: layout style;
+}
+
+/* Message containers should not cause reflow */
+.phonon-chat-message {
+  /* Prevent layout shift when new messages arrive */
+  contain: layout;
+  /* Fixed width context */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Newspaper columns - construction stability */
+.newspaper-column {
+  /* Already has contain: layout style - ensure it's applied */
+  overflow: hidden;
+  /* Prevent horizontal overflow from pushing siblings */
+  max-width: 100%;
+}
+
+/* Streaming text stability */
+.phonon-prose {
+  /* Prevent reflow during incremental text rendering */
+  contain: style;
+  overflow-wrap: break-word;
+}
+
 /* ============================================
    DESIGN DNA - FORCED COLOR OVERRIDES
    These MUST be last to ensure proper cascade

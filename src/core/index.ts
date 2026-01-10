@@ -34,6 +34,9 @@ export {
 // Typewriter Hook
 export {
   useTypewriter,
+  setTypingSpeedMultiplier,
+  getTypingSpeedMultiplier,
+  READING_SPEEDS,
   type TypingSpeed,
   type UseTypewriterOptions,
   type UseTypewriterReturn,
