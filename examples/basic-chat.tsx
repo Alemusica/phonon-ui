@@ -7,12 +7,11 @@ import {
   ChatWidget,
   useChat,
   SwissHeading,
-  swissTheme,
 } from 'phonon-ui';
 import 'phonon-ui/styles';
 
 // Simulated LLM response for demo
-async function* simulateLLMResponse(prompt: string) {
+async function* simulateLLMResponse(_prompt: string) {
   const responses: Record<string, string> = {
     default: `Grazie per il tuo messaggio! Questa è una demo di **Phonon UI**.
 
