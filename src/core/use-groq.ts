@@ -180,6 +180,6 @@ export function useGroq(config?: GroqConfig): UseGroqReturn {
     isLoading,
     error,
     setError,
-    isConfigured: !!configRef.current?.apiKey,
+    isConfigured: !!config?.apiKey,
   };
 }

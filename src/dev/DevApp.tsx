@@ -603,11 +603,11 @@ function ChatDemo() {
 
   // Fullscreen container classes
   const containerClasses = isFullscreen
-    ? 'fixed inset-0 z-50 bg-background'
+    ? 'fixed inset-0 z-50 bg-background flex flex-col'
     : 'space-y-4';
 
   const chatContainerClasses = isFullscreen
-    ? 'h-full'
+    ? 'flex-1 min-h-0'
     : 'h-[600px] border border-border rounded-lg overflow-hidden shadow-lg';
 
   return (

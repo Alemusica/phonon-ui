@@ -139,5 +139,35 @@ export {
   ELEMENTS,
 } from './design-dna';
 
+// Concrete Pour System (Layout-first rendering)
+export {
+  analyzeStructure,
+  calculateLayout,
+  PourController,
+  useConcretePour,
+  type ContentStructure,
+  type LayoutRegion,
+  type CharPosition,
+  type PourState,
+  type UseConcretePourOptions,
+  type UseConcretePourReturn,
+} from './concrete-pour';
+
+// Musical Orchestration (DNA Timing Department)
+export {
+  PHI,
+  HEMIOLA,
+  TEMPO,
+  DYNAMICS,
+  RHYTHM_PATTERNS,
+  MusicalOrchestrator,
+  orchestrator as musicalOrchestrator,
+  type TempoMarking,
+  type DynamicMarking,
+  type RhythmPattern,
+  type OrchestrationScore,
+  type SectionMarking,
+} from './musical-orchestration';
+
 // Utilities
 export { cn } from './utils';
