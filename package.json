@@ -29,8 +29,9 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:lib": "tsup",
+    "build": "vite build",
+    "build:lib": "LIB_BUILD=true tsup",
+    "build:pages": "BASE_URL=/phonon-ui/ vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",

@@ -3,14 +3,17 @@ import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
+const isLibBuild = process.env.LIB_BUILD === 'true';
+
 export default defineConfig({
+  base: process.env.BASE_URL || '/',
   plugins: [
     react(),
-    dts({
+    ...(isLibBuild ? [dts({
       insertTypesEntry: true,
       include: ['src'],
-      exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx'],
-    }),
+      exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx', 'src/dev/**'],
+    })] : []),
   ],
   resolve: {
     alias: {
@@ -21,7 +24,7 @@ export default defineConfig({
       '@phonon/styles': resolve(__dirname, 'src/styles'),
     },
   },
-  build: {
+  build: isLibBuild ? {
     lib: {
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
@@ -30,8 +33,8 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
         const ext = format === 'es' ? 'mjs' : 'js';
-        return entryName === 'index' 
-          ? `index.${ext}` 
+        return entryName === 'index'
+          ? `index.${ext}`
           : `${entryName}/index.${ext}`;
       },
     },
@@ -47,6 +50,9 @@ export default defineConfig({
       },
     },
     cssCodeSplit: false,
+    sourcemap: true,
+  } : {
+    outDir: 'dist',
     sourcemap: true,
   },
 });
