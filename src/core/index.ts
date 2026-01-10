@@ -36,6 +36,7 @@ export {
   useTypewriter,
   setTypingSpeedMultiplier,
   getTypingSpeedMultiplier,
+  countSyllables,
   READING_SPEEDS,
   type TypingSpeed,
   type UseTypewriterOptions,

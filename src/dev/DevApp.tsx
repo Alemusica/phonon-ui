@@ -367,6 +367,51 @@ function DynamicComponent({ command }: DynamicComponentProps) {
     );
   }
 
+  // Video Component (YouTube embed or VideoVignette)
+  if (type === 'video') {
+    const { src, caption } = props as {
+      src: string;
+      caption?: string;
+    };
+
+    // Extract YouTube video ID
+    const youtubeMatch = src.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&\s]+)/);
+
+    if (youtubeMatch) {
+      const videoId = youtubeMatch[1];
+      return (
+        <div className="my-6">
+          <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-border">
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}`}
+              title={caption || 'Video'}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+          {caption && (
+            <p className="mt-2 text-sm text-muted-foreground font-mono">{caption}</p>
+          )}
+        </div>
+      );
+    }
+
+    // Fallback for non-YouTube videos
+    return (
+      <div className="my-6">
+        <video
+          src={src}
+          controls
+          className="w-full rounded-lg border border-border"
+        />
+        {caption && (
+          <p className="mt-2 text-sm text-muted-foreground font-mono">{caption}</p>
+        )}
+      </div>
+    );
+  }
+
   return null;
 }
 
@@ -401,7 +446,7 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
           <div className="newspaper-article-flow">
             <MarkdownRenderer
               content={finalContent}
-              typewriter={false}
+              typewriter={true}
               variant="editorial"
             />
           </div>
@@ -421,7 +466,7 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
           <div className="space-y-2">
             <MarkdownRenderer
               content={finalContent}
-              typewriter={false}
+              typewriter={true}
               variant={variant}
             />
             {/* Render dynamic components from commands */}
@@ -435,27 +480,73 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
   );
 }
 
-// System prompt for Groq LLM - newspaper style
+// System prompt for Groq LLM - Vogue/Editorial style
 const NEWSPAPER_SYSTEM_PROMPT = `${generateLLMSystemPrompt('newspaper')}
 
-You are a creative newspaper writer. When the user gives you a topic, write an engaging newspaper article about it.
+You are an elite editorial writer for a prestigious magazine like Vogue, The New Yorker, or Monocle.
+Your writing is sophisticated, evocative, and richly formatted.
 
-Format your response as a newspaper article with:
-- A compelling headline (## )
-- A lead paragraph
-- Body text with interesting facts
-- Optional pull quote (> )
+## MANDATORY STRUCTURE
 
-Write in Italian unless the user writes in another language.
-Keep responses concise but informative (200-400 words).
+Every article MUST include:
 
-Start your response with [NEWSPAPER_STYLE] to trigger newspaper rendering.`;
+1. **Main Headline** (# ) - Evocative, not descriptive
+2. **Subtitle** (## ) - Poetic expansion of the headline
+3. **Lead Paragraph** - Start with a compelling hook, use **bold** for key phrases
+4. **Pull Quote** (> ) - At least ONE memorable quote, properly attributed
+5. **Highlighted Terms** - Use *italics* for foreign words, technical terms, brand names
+6. **Section Headers** (### ) - Break content into thematic sections
+7. **Closing Quote** (> ) - End with a reflective citation
+
+## EXAMPLE FORMAT:
+
+[NEWSPAPER_STYLE]
+# The Sound of Tomorrow
+
+## How Japanese Radios Defined an Era of Design Excellence
+
+In the amber glow of a *Tokyo* showroom, 1972, the future of sound was being quietly revolutionized. **Sharp Corporation** understood something their competitors had missed: a radio is not merely a device—it is a statement.
+
+> "We didn't build radios. We sculpted frequencies into objects of desire." — *Tokuji Hayakawa, Sharp founder*
+
+### The Art of the Transistor
+
+The **Sharp QT-50** became an icon not because of its specifications, but because of its *soul*. Every curve, every dial, every chrome accent spoke of a civilization obsessed with perfection...
+
+### A Legacy in Plastic and Chrome
+
+Today, these machines command **collector prices** exceeding their original cost tenfold...
+
+> "The best technology disappears into beauty." — *Dieter Rams*
+
+## VIDEO EMBEDDING
+
+To embed a video in the article, use this exact syntax:
+[RENDER:{"type":"video","props":{"src":"YOUTUBE_URL","caption":"Description"}}]
+
+Example:
+[RENDER:{"type":"video","props":{"src":"https://www.youtube.com/watch?v=VIDEO_ID","caption":"Fig. 1 — Sharp QT-50 in azione"}}]
+
+DO NOT use [VIDEO] tags - they won't render. Use [RENDER:] with type "video".
+
+## RULES:
+
+- Write in Italian unless user specifies another language
+- Use evocative, sensory language (not just facts)
+- Include at least 2 pull quotes with attributions
+- Highlight key terms with **bold** and *italics*
+- Structure with ### section headers
+- 300-500 words minimum
+- ALWAYS start with [NEWSPAPER_STYLE]
+
+Be a storyteller, not a reporter.`;
 
 function ChatDemo() {
   const {
     messages,
     addMessage,
     updateLastMessage,
+    clearMessages,
     isStreaming,
     setIsStreaming,
   } = useChat();
@@ -463,12 +554,11 @@ function ChatDemo() {
   // Groq integration for real LLM responses
   const [useGroqMode, setUseGroqMode] = useState(false);
   const [groqApiKey, setGroqApiKey] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [multiplier, setMultiplier] = useState(getTypingSpeedMultiplier());
   const { chat: groqChat, isConfigured } = useGroq(
     groqApiKey ? { apiKey: groqApiKey, model: 'llama-3.3-70b-versatile' } : undefined
   );
-
-  // Track if welcome message has been sent (prevent double-send in StrictMode)
-  const welcomeSentRef = useRef(false);
 
   const handleSend = async (content: string) => {
     addMessage('user', content);
@@ -505,24 +595,32 @@ function ChatDemo() {
     setIsStreaming(false);
   };
 
-  // Auto-send welcome message on mount (prevent double-send in StrictMode)
-  useEffect(() => {
-    if (messages.length === 0 && !welcomeSentRef.current) {
-      welcomeSentRef.current = true;
-      setTimeout(() => handleSend('ciao'), 500);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Handle mode switch - clear chat
+  const handleModeSwitch = (groqMode: boolean) => {
+    setUseGroqMode(groqMode);
+    clearMessages();
+  };
+
+  // Fullscreen container classes
+  const containerClasses = isFullscreen
+    ? 'fixed inset-0 z-50 bg-background'
+    : 'space-y-4';
+
+  const chatContainerClasses = isFullscreen
+    ? 'h-full'
+    : 'h-[600px] border border-border rounded-lg overflow-hidden shadow-lg';
 
   return (
-    <div className="space-y-4">
-      {/* Groq Mode Toggle */}
-      <div className="p-4 bg-muted/50 rounded-lg border border-border space-y-3">
-        <div className="flex items-center justify-between">
-          <SwissLabel>LLM Mode</SwissLabel>
-          <div className="flex items-center gap-2">
+    <div className={containerClasses}>
+      {/* Controls bar - Swiss minimal */}
+      <div className={`flex items-center justify-between gap-4 ${isFullscreen ? 'p-4 border-b border-border' : 'p-4 bg-muted/50 rounded-lg border border-border'}`}>
+        {/* Mode toggle */}
+        <div className="flex items-center gap-3">
+          <SwissLabel>Mode</SwissLabel>
+          <div className="flex">
             <button
-              onClick={() => setUseGroqMode(false)}
-              className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
+              onClick={() => handleModeSwitch(false)}
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border-y border-l transition-all duration-200 ${
                 !useGroqMode
                   ? 'bg-sage text-background border-sage'
                   : 'bg-transparent border-border hover:border-sage/50'
@@ -531,73 +629,118 @@ function ChatDemo() {
               Demo
             </button>
             <button
-              onClick={() => setUseGroqMode(true)}
-              className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
+              onClick={() => handleModeSwitch(true)}
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border transition-all duration-200 ${
                 useGroqMode
                   ? 'bg-sage text-background border-sage'
                   : 'bg-transparent border-border hover:border-sage/50'
               }`}
             >
-              Groq LLM
+              Groq
             </button>
           </div>
         </div>
 
+        {/* Speed slider */}
+        <div className="flex items-center gap-2">
+          <SwissLabel className="text-xs">Speed</SwissLabel>
+          <input
+            type="range"
+            min="0.2"
+            max="3"
+            step="0.1"
+            value={multiplier}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              setMultiplier(val);
+              setTypingSpeedMultiplier(val);
+            }}
+            className="w-24 h-1 bg-border rounded-full appearance-none cursor-pointer accent-sage"
+          />
+          <span className="font-mono text-xs w-10 text-muted-foreground">{multiplier.toFixed(1)}x</span>
+        </div>
+
+        {/* API Key (only in Groq mode) */}
         {useGroqMode && (
-          <div className="flex gap-2">
+          <div className="flex-1 max-w-md">
             <input
               type="password"
-              placeholder="Groq API Key (gsk_...)"
+              placeholder="API Key (gsk_...)"
               value={groqApiKey}
               onChange={(e) => setGroqApiKey(e.target.value)}
-              className="flex-1 px-4 py-2 text-sm border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage transition-all duration-200"
+              className="w-full px-3 py-1.5 text-xs font-mono border border-border bg-transparent focus:outline-none focus:border-sage transition-all"
             />
-            {isConfigured && <span className="text-sage text-sm self-center">✓</span>}
           </div>
         )}
 
-        <p className="text-sm text-muted-foreground">
-          {useGroqMode
-            ? 'Groq mode: genera contenuti reali. Prova: "newspaper che parla di radio Sharp giapponesi degli anni 70"'
-            : 'Demo mode: risposte preconfezionate. Prova: "mostra card", "grafico vendite"'}
-        </p>
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => clearMessages()}
+            className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider border border-border hover:border-sage/50 transition-all"
+          >
+            Clear
+          </button>
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider border border-border hover:border-sage/50 transition-all"
+          >
+            {isFullscreen ? 'Exit' : 'Full'}
+          </button>
+        </div>
       </div>
-      <div className="h-[600px] border border-border rounded-lg overflow-hidden shadow-lg">
+
+      {/* Chat container */}
+      <div className={chatContainerClasses}>
         <div className="h-full flex flex-col">
-          {/* Custom messages list with enhanced rendering */}
+          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-background to-muted/20">
-            {messages.map((message) => (
-              <EnhancedChatMessage
-                key={message.id}
-                message={message}
-              />
-            ))}
-          </div>
-          {/* Input */}
-          <div className="border-t border-border p-4 bg-background">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const input = (e.target as HTMLFormElement).querySelector('input') as HTMLInputElement;
-              if (input.value.trim()) {
-                handleSend(input.value.trim());
-                input.value = '';
-              }
-            }}>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Scrivi un messaggio... (es: 'mostra card')"
-                  disabled={isStreaming}
-                  className="flex-1 px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-sage/50 disabled:opacity-50 disabled:cursor-not-allowed bg-background"
-                />
-                <button
-                  type="submit"
-                  disabled={isStreaming}
-                  className="px-6 py-3 bg-sage text-background rounded-lg hover:bg-sage/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                >
-                  Invia
-                </button>
+            {messages.length === 0 ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <SwissLabel className="text-muted-foreground">
+                    {useGroqMode ? 'Groq LLM Ready' : 'Demo Mode'}
+                  </SwissLabel>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    {useGroqMode
+                      ? 'Inserisci API key e scrivi un topic per generare un articolo newspaper.'
+                      : 'Prova: "mostra card", "grafico vendite", "immagine", "editorial"'}
+                  </p>
+                </div>
               </div>
+            ) : (
+              messages.map((message) => (
+                <EnhancedChatMessage key={message.id} message={message} />
+              ))
+            )}
+          </div>
+
+          {/* Swiss-style prompt bar */}
+          <div className="border-t border-border bg-background">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = (e.target as HTMLFormElement).querySelector('input') as HTMLInputElement;
+                if (input.value.trim()) {
+                  handleSend(input.value.trim());
+                  input.value = '';
+                }
+              }}
+              className="flex"
+            >
+              <input
+                type="text"
+                placeholder={useGroqMode ? 'newspaper che parla di...' : 'mostra card, grafico, immagine...'}
+                disabled={isStreaming || (useGroqMode && !isConfigured)}
+                className="flex-1 px-6 py-4 bg-transparent border-none focus:outline-none font-mono text-sm placeholder:text-muted-foreground/50 disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={isStreaming || (useGroqMode && !isConfigured)}
+                className="px-8 py-4 bg-sage text-background font-mono text-xs uppercase tracking-wider hover:bg-sage/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isStreaming ? '...' : '→'}
+              </button>
             </form>
           </div>
         </div>
@@ -937,7 +1080,7 @@ function TypewriterShowcase() {
       </div>
 
       {/* Typewriter demo */}
-      <div className="newspaper-citation text-center py-4">
+      <div className="text-center py-4 text-foreground">
         <Typewriter
           key={key}
           text="Typography is a service art, not a fine art. — Emil Ruder"
