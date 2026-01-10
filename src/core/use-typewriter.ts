@@ -24,7 +24,7 @@ const SPEED_CONFIG: Record<TypingSpeed, SpeedConfig> = {
 /**
  * Get typing delay for a character based on context
  */
-function getTypingDelay(char: string, prevChar: string, speed: TypingSpeed): number {
+function getTypingDelay(_char: string, prevChar: string, speed: TypingSpeed): number {
   const config = SPEED_CONFIG[speed];
   
   if (speed === 'instant') return 0;

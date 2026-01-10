@@ -4,7 +4,6 @@
  * Renders text with typewriter effect and optional cursor.
  */
 
-import React from 'react';
 import { useTypewriter, TypingSpeed } from '../core/use-typewriter';
 import { cn } from '../core/utils';
 

@@ -7,7 +7,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../core/utils';
-import { useTypewriter, TypingSpeed } from '../core/use-typewriter';
+import { TypingSpeed } from '../core/use-typewriter';
 import { parseStreamingContent } from '../core/streaming-parser';
 import { Message } from '../core/use-chat';
 import { MarkdownRenderer } from './MarkdownRenderer';
