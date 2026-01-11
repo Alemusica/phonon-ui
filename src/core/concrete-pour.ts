@@ -16,6 +16,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { countSyllables, getTypingSpeedMultiplier } from './use-typewriter';
+import { MusicalOrchestrator } from './musical-orchestration';
 
 // ════════════════════════════════════════════════════════════════
 // TYPES
@@ -122,8 +123,7 @@ export function analyzeStructure(content: string): ContentStructure {
 // LAYOUT CALCULATOR
 // ════════════════════════════════════════════════════════════════
 
-const PHI = 1.618;
-const BASE_CHAR_DELAY = 25; // ms
+const BASE_CHAR_DELAY = 10; // ms - fast ChatGPT-like speed (~100 chars/sec)
 
 /**
  * Calculate exact positions for every character
@@ -138,6 +138,7 @@ export function calculateLayout(
   const lines = content.split('\n');
 
   let currentLine = 0;
+  let cumulativeDelay = 0; // Track delay across ALL regions (not reset on empty lines)
 
   for (const line of lines) {
     // Detect region type
@@ -152,8 +153,14 @@ export function calculateLayout(
       type = 'citation';
     }
 
-    // Create region
-    const charPositions = calculateCharPositions(line, regions.length > 0 ? regions[regions.length - 1].charPositions[regions[regions.length - 1].charPositions.length - 1]?.delay || 0 : 0, currentLine, type);
+    // Create region - pass cumulative delay to maintain timing across empty lines
+    const charPositions = calculateCharPositions(line, cumulativeDelay, currentLine, type);
+
+    // Update cumulative delay from the last position in this region
+    // For empty lines, cumulativeDelay stays the same (no reset!)
+    if (charPositions.length > 0) {
+      cumulativeDelay = charPositions[charPositions.length - 1].delay + BASE_CHAR_DELAY;
+    }
 
     regions.push({
       id: `region-${regions.length}`,
@@ -174,28 +181,31 @@ export function calculateLayout(
 
 /**
  * Calculate timing and position for each character in a line
- * Uses syllable-based rhythm for natural pacing
+ * SYNCED WITH MUSICAL ORCHESTRATOR - single source of truth for timing
  */
 function calculateCharPositions(
   line: string,
   startDelay: number,
   lineNumber: number,
-  type: LayoutRegion['type']
+  type: LayoutRegion['type'],
+  orchestrator?: MusicalOrchestrator
 ): CharPosition[] {
   const positions: CharPosition[] = [];
   const words = line.split(/(\s+)/); // Keep spaces
 
   let x = 0;
   let cumulativeDelay = startDelay;
+  let prevChar = '';
 
-  // Type-based delay multiplier
-  const typeMultiplier = {
-    'headline': 1.5,      // Slower for impact
-    'subheadline': 1.3,
-    'citation': 1.4,      // Dramatic pause feel
-    'section-header': 1.2,
-    'body': 1.0,
-  }[type];
+  // Map region type to section type for orchestrator
+  const sectionMap: Record<LayoutRegion['type'], 'headline' | 'subheadline' | 'body' | 'citation' | 'section-header'> = {
+    'headline': 'headline',
+    'subheadline': 'subheadline',
+    'citation': 'citation',
+    'section-header': 'section-header',
+    'body': 'body',
+  };
+  let beatPosition = 0;
 
   for (const word of words) {
     const isSpace = /^\s+$/.test(word);
@@ -204,16 +214,13 @@ function calculateCharPositions(
     for (let i = 0; i < word.length; i++) {
       const char = word[i];
 
-      // Calculate delay based on character context
-      let delay = BASE_CHAR_DELAY * typeMultiplier;
-
-      // Add jitter for human feel (±15%)
-      delay *= 0.85 + Math.random() * 0.3;
-
-      // Syllable-based pause at word end (space after word)
-      if (isSpace && i === 0 && positions.length > 0) {
-        const syllableMultiplier = Math.pow(PHI, Math.max(0, syllables - 1) * 0.5);
-        delay *= syllableMultiplier;
+      // USE ORCHESTRATOR FOR DELAY (single source of truth)
+      let delay: number;
+      if (orchestrator) {
+        delay = orchestrator.getCharacterDelay(char, prevChar, syllables, sectionMap[type], beatPosition++);
+      } else {
+        // Fallback: basic delay calculation
+        delay = BASE_CHAR_DELAY * (isSpace ? 1.2 : 1.0);
       }
 
       positions.push({
@@ -225,6 +232,7 @@ function calculateCharPositions(
       });
 
       cumulativeDelay += delay;
+      prevChar = char;
       x++;
     }
   }

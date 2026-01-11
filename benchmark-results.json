@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-01-10T21:15:10.126Z",
+  "timestamp": "2026-01-11T00:44:48.841Z",
   "testSuite": "Cooperative Refinement Benchmark",
   "results": {
     "forward": [
       {
         "pipeline": "forward",
         "testCase": "Short Content (< 100 words)",
-        "duration": 42.33908400000007,
+        "duration": 42.65316699999994,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -20,7 +20,7 @@
       {
         "pipeline": "forward",
         "testCase": "Medium Content (200-400 words)",
-        "duration": 17.59420799999998,
+        "duration": 18.421875,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -34,7 +34,7 @@
       {
         "pipeline": "forward",
         "testCase": "Long Content (> 500 words)",
-        "duration": 18.227250000000026,
+        "duration": 17.807999999999993,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -48,7 +48,7 @@
       {
         "pipeline": "forward",
         "testCase": "Content with Overflow Issues",
-        "duration": 14.260499999999979,
+        "duration": 14.23700000000008,
         "iterations": 1,
         "qualityScore": 86,
         "issues": {
@@ -62,7 +62,7 @@
       {
         "pipeline": "forward",
         "testCase": "Content with Structure Problems",
-        "duration": 13.161915999999906,
+        "duration": 13.742291000000023,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -78,7 +78,7 @@
       {
         "pipeline": "iterative",
         "testCase": "Short Content (< 100 words)",
-        "duration": 13.046875,
+        "duration": 12.31045800000004,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -96,7 +96,7 @@
       {
         "pipeline": "iterative",
         "testCase": "Medium Content (200-400 words)",
-        "duration": 12.856540999999993,
+        "duration": 14.03079200000002,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -114,7 +114,7 @@
       {
         "pipeline": "iterative",
         "testCase": "Long Content (> 500 words)",
-        "duration": 14.888791999999967,
+        "duration": 14.882249999999999,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -132,7 +132,7 @@
       {
         "pipeline": "iterative",
         "testCase": "Content with Overflow Issues",
-        "duration": 38.229124999999954,
+        "duration": 37.04562499999997,
         "iterations": 3,
         "qualityScore": 80,
         "issues": {
@@ -150,7 +150,7 @@
       {
         "pipeline": "iterative",
         "testCase": "Content with Structure Problems",
-        "duration": 12.960459000000014,
+        "duration": 13.261167,
         "iterations": 1,
         "qualityScore": 100,
         "issues": {
@@ -169,8 +169,8 @@
   },
   "summary": {
     "totalTests": 5,
-    "forwardAvgTime": 21.116591599999992,
-    "iterativeAvgTime": 18.396358399999986,
+    "forwardAvgTime": 21.372466600000006,
+    "iterativeAvgTime": 18.306058400000005,
     "forwardAvgQuality": 97.2,
     "iterativeAvgQuality": 96,
     "avgIterations": 1.4

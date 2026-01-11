@@ -184,5 +184,38 @@ export {
   type RefinementResult,
 } from './cooperative-refinement';
 
+// Phonon Scheduler (GPUAudio-style pipeline)
+export {
+  PhononScheduler,
+  createScheduler,
+  type PipelineStage,
+  type ScheduledChar,
+  type CharacterBatch,
+  type SchedulerConfig,
+  type SchedulerCallbacks,
+} from './phonon-scheduler';
+
+// Phonon Pipeline Hook
+export {
+  usePhononPipeline,
+  type UsePhononPipelineOptions,
+  type UsePhononPipelineReturn,
+} from './use-phonon-pipeline';
+
+// Visual Debugger (Testing)
+export {
+  VisualDebugger,
+  createVisualDebugger,
+  debugElement,
+  visualDebugger,
+  type CharObservation,
+  type PositionChange,
+  type CharComparison,
+  type DebugReport,
+  type ExpectedPlan,
+  type PhaseEvent,
+  type DOMSnapshot,
+} from './visual-debugger';
+
 // Utilities
 export { cn } from './utils';

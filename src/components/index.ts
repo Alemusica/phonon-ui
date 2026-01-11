@@ -21,6 +21,12 @@ export {
   type ProseVariant,
 } from './MarkdownRenderer';
 
+// Concrete Markdown (with Concrete Pour animation)
+export {
+  ConcreteMarkdownRenderer,
+  type ConcreteMarkdownRendererProps,
+} from './ConcreteMarkdownRenderer';
+
 // Typewriter
 export {
   Typewriter,
@@ -75,3 +81,6 @@ export {
   VideoVignette,
   type VideoVignetteProps,
 } from './VideoVignette';
+
+// Debug Panel
+export { DebugPanel } from './DebugPanel';

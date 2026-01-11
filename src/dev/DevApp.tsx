@@ -4,11 +4,11 @@
  * Visual testing playground for all components.
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import {
   useChat,
   useGroq,
-  MarkdownRenderer,
+  ConcreteMarkdownRenderer,
   Typewriter,
   SwissHero,
   SwissDisplay,
@@ -31,6 +31,7 @@ import {
   NewspaperBody,
   setTypingSpeedMultiplier,
   getTypingSpeedMultiplier,
+  DebugPanel,
 } from '../index';
 import { parseStreamingContent, ParsedCommand } from '../core/streaming-parser';
 import { generateLLMSystemPrompt } from '../core/design-dna';
@@ -418,9 +419,10 @@ function DynamicComponent({ command }: DynamicComponentProps) {
 // Enhanced ChatMessage component with command rendering
 interface EnhancedChatMessageProps {
   message: Message;
+  isStreaming?: boolean;  // Is this message still receiving content?
 }
 
-function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
+function EnhancedChatMessage({ message, isStreaming = false }: EnhancedChatMessageProps) {
   const isUser = message.role === 'user';
   // Note: typewriter disabled for markdown - partial text breaks ReactMarkdown parsing
 
@@ -439,14 +441,16 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
   const variant = isEditorial ? 'editorial' : 'default';
 
   if (isNewspaperStyle && !isUser) {
-    // Render full newspaper layout for LLM responses
+    // Render full newspaper layout with Concrete Pour animation
+    // Stable DOM + character-level reveal for no-reflow rendering
     return (
       <div className="w-full -mx-6">
         <NewspaperPage title="PHONON TIMES" theme="light">
           <div className="newspaper-article-flow">
-            <MarkdownRenderer
+            <ConcreteMarkdownRenderer
               content={finalContent}
-              typewriter={true}
+              isStreaming={isStreaming}
+              animated={true}
               variant="editorial"
             />
           </div>
@@ -464,9 +468,15 @@ function EnhancedChatMessage({ message }: EnhancedChatMessageProps) {
           </div>
         ) : (
           <div className="space-y-2">
-            <MarkdownRenderer
+            {/* USE ConcreteMarkdownRenderer for ALL assistant messages
+                This uses the GPUAudio-style pipeline:
+                - Stable DOM (no reparse on each char)
+                - Character reveal via CSS opacity
+                - Zero reflow during animation */}
+            <ConcreteMarkdownRenderer
               content={finalContent}
-              typewriter={true}
+              isStreaming={isStreaming}
+              animated={true}
               variant={variant}
             />
             {/* Render dynamic components from commands */}
@@ -546,7 +556,7 @@ function ChatDemo() {
     messages,
     addMessage,
     updateLastMessage,
-    clearMessages,
+    clearHistory,
     isStreaming,
     setIsStreaming,
   } = useChat();
@@ -598,7 +608,7 @@ function ChatDemo() {
   // Handle mode switch - clear chat
   const handleModeSwitch = (groqMode: boolean) => {
     setUseGroqMode(groqMode);
-    clearMessages();
+    clearHistory();
   };
 
   // Fullscreen container classes
@@ -676,7 +686,7 @@ function ChatDemo() {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => clearMessages()}
+            onClick={() => clearHistory()}
             className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider border border-border hover:border-sage/50 transition-all"
           >
             Clear
@@ -709,8 +719,12 @@ function ChatDemo() {
                 </div>
               </div>
             ) : (
-              messages.map((message) => (
-                <EnhancedChatMessage key={message.id} message={message} />
+              messages.map((message, index) => (
+                <EnhancedChatMessage
+                  key={message.id}
+                  message={message}
+                  isStreaming={isStreaming && index === messages.length - 1 && message.role === 'assistant'}
+                />
               ))
             )}
           </div>
@@ -1023,6 +1037,8 @@ export function DevApp() {
           </div>
         </div>
       </footer>
+      {/* Debug Panel - Visual Testing */}
+      <DebugPanel targetSelector=".newspaper-article-flow" />
     </div>
   );
 }
