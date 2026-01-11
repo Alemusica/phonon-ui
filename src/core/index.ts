@@ -184,6 +184,13 @@ export {
   type RefinementResult,
 } from './cooperative-refinement';
 
+// Cooperative Refinement Hook
+export {
+  useCooperativeRefinement,
+  type UseCooperativeRefinementOptions,
+  type UseCooperativeRefinementReturn,
+} from './use-cooperative-refinement';
+
 // Phonon Scheduler (GPUAudio-style pipeline)
 export {
   PhononScheduler,

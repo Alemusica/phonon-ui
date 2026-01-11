@@ -384,12 +384,14 @@ export class RefinementLoop {
    * @param content Initial content from LLM
    * @param constraintsOverride Layout constraints to enforce
    * @param maxIterations Maximum refinement iterations
+   * @param llmCallback Optional callback to get refined content from LLM
    * @returns Refinement result with final content and metrics
    */
   async refine(
     content: string,
     constraintsOverride?: LayoutConstraints,
-    maxIterations: number = 3
+    maxIterations: number = 3,
+    llmCallback?: (prompt: string) => Promise<string>
   ): Promise<RefinementResult> {
     const startTime = performance.now();
 
@@ -421,14 +423,23 @@ export class RefinementLoop {
       // Generate refinement prompt
       const prompt = this.generateRefinementPrompt(currentFeedback, iteration);
 
-      // NOTE: In real implementation, this would call the LLM
-      // For now, we just store the prompt and return feedback
-      // The actual LLM call would happen in the consuming code
-      console.log('[RefinementLoop] Generated prompt:', prompt);
+      if (llmCallback) {
+        try {
+          currentContent = await llmCallback(prompt);
+        } catch (error) {
+          console.error('[RefinementLoop] LLM callback failed:', error);
+          break;
+        }
+      } else {
+        // No callback, just break (analysis only mode)
+        break;
+      }
 
-      // In a full implementation, we'd wait for LLM response here
-      // For now, we'll track the feedback and break
-      break;
+      // Analyze refined content
+      const iterationStart = performance.now();
+      currentFeedback = analyzeLayout(currentContent, this.constraints);
+      this.history.push(currentFeedback);
+      this.iterationTimes.push(performance.now() - iterationStart);
     }
 
     const totalTime = performance.now() - startTime;
